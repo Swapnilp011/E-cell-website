@@ -24,7 +24,7 @@ export function LeadershipVoice() {
       handle: '@Abhay',
       role: 'Vice-Head, E-Cell IICT',
       testimonial:
-        'As the Vice-Head, I am constantly amazed by the potential of our team and the students we work with. Our events have shown how eager students are to develop their skills. It\'s a privilege to be a part of this journey.',
+        "As the Vice-Head, I am constantly amazed by the potential of our team and the students we work with. Our events have shown how eager students are to develop their skills. It's a privilege to be a part of this journey.",
       imageUrl: 'https://picsum.photos/100/100?random=2',
       dataAiHint: 'person professional',
     },
