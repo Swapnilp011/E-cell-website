@@ -13,7 +13,7 @@ export function Hero() {
         className="object-cover"
         data-ai-hint="innovation technology"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--midnight-blue))] via-black/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-black/50 to-transparent" />
       <div className="relative container flex h-full flex-col items-center justify-center text-center text-primary-foreground">
         <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
           Fostering the Next Generation of Innovators

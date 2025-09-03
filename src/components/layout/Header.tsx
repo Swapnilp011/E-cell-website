@@ -10,9 +10,7 @@ export function Header() {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <SparklesIcon className="h-5 w-5" />
           </div>
-          <span className="font-headline text-lg font-bold">
-            E-Cell IICT
-          </span>
+          <span className="font-headline text-lg font-bold">E-Cell IICT</span>
         </Link>
         <nav className="hidden flex-1 items-center gap-4 text-sm font-medium md:flex">
           <Link
@@ -26,6 +24,18 @@ export function Header() {
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Timeline
+          </Link>
+          <Link
+            href="#eureka"
+            className="text-foreground/60 transition-colors hover:text-foreground/80"
+          >
+            Eureka
+          </Link>
+          <Link
+            href="#osf"
+            className="text-foreground/60 transition-colors hover:text-foreground/80"
+          >
+            Opn-Source
           </Link>
           <Link
             href="#events"

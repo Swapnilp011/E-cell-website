@@ -45,7 +45,9 @@ export function Timeline() {
                 <h4 className="font-headline text-lg font-bold">
                   {event.title}
                 </h4>
-                <p className="mb-2 text-sm text-muted-foreground">{event.location}</p>
+                <p className="mb-2 text-sm text-muted-foreground">
+                  {event.location}
+                </p>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {event.description}
                 </p>
