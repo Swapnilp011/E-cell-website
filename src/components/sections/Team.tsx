@@ -91,12 +91,7 @@ export function Team() {
             >
               <CardContent className="relative flex flex-col items-center p-6">
                 <Avatar className="mb-4 h-24 w-24 border-2 border-primary">
-                  <AvatarImage
-                    src={member.imageUrl}
-                    alt={member.name}
-                    data-ai-hint={member.dataAiHint}
-                  />
-                  <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
                 <h3 className="font-headline text-xl font-bold">
                   {member.name}
