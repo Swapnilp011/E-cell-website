@@ -10,14 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -27,8 +20,11 @@ const registerSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
   email: z.string().email({ message: 'Invalid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-  department: z.string().min(1, { message: 'Please select a department' }),
-  div: z.string().min(1, { message: 'Please select a division' }),
+  college: z
+    .string()
+    .min(2, { message: 'College name must be at least 2 characters' }),
+  department: z.string().min(1, { message: 'Please enter a department' }),
+  div: z.string().min(1, { message: 'Please enter a division' }),
 });
 
 type RegisterFormInputs = z.infer<typeof registerSchema>;
@@ -37,7 +33,6 @@ export function RegisterForm() {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<RegisterFormInputs>({
     resolver: zodResolver(registerSchema),
@@ -94,28 +89,26 @@ export function RegisterForm() {
               </p>
             )}
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="college">College</Label>
+            <Input
+              id="college"
+              placeholder="MGMU's IICT"
+              {...register('college')}
+            />
+            {errors.college && (
+              <p className="text-sm text-destructive">
+                {errors.college.message}
+              </p>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="department">Department</Label>
-              <Controller
-                name="department"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger id="department">
-                      <SelectValue placeholder="Select Dept" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="CSE">CSE</SelectItem>
-                      <SelectItem value="IT">IT</SelectItem>
-                      <SelectItem value="ENTC">ENTC</SelectItem>
-                      <SelectItem value="EE">EE</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
+              <Input
+                id="department"
+                placeholder="e.g. CSE"
+                {...register('department')}
               />
               {errors.department && (
                 <p className="text-sm text-destructive">
@@ -125,24 +118,7 @@ export function RegisterForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="div">Division</Label>
-              <Controller
-                name="div"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger id="div">
-                      <SelectValue placeholder="Select Div" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A">A</SelectItem>
-                      <SelectItem value="B">B</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <Input id="div" placeholder="e.g. A" {...register('div')} />
               {errors.div && (
                 <p className="text-sm text-destructive">{errors.div.message}</p>
               )}
