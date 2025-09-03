@@ -16,7 +16,7 @@ export function LeadershipVoice() {
       role: 'Team Head, E-Cell IICT',
       testimonial:
         'Being the Head of E-Cell IICT has been a transformative experience. Our goal is to nurture entrepreneurship and innovation, and seeing the enthusiasm among students is truly inspiring. Each event we conduct feels like a step towards a brighter future for young innovators.',
-      imageUrl: 'https://picsum.photos/100/100?random=1',
+      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&h=100&fit=crop',
       dataAiHint: 'person smiling',
     },
     {
@@ -25,7 +25,7 @@ export function LeadershipVoice() {
       role: 'Vice-Head, E-Cell IICT',
       testimonial:
         "As the Vice-Head, I am constantly amazed by the potential of our team and the students we work with. Our events have shown how eager students are to develop their skills. It's a privilege to be a part of this journey.",
-      imageUrl: 'https://picsum.photos/100/100?random=2',
+      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&h=100&fit=crop',
       dataAiHint: 'person professional',
     },
   ];

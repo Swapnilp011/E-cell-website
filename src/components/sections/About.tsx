@@ -51,7 +51,7 @@ export function About() {
         </div>
         <div className="flex items-center justify-center">
           <Image
-            src="https://picsum.photos/600/400"
+            src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&h=400&fit=crop"
             alt="E-Cell Team Collaboration"
             width={600}
             height={400}

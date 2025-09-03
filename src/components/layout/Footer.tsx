@@ -27,7 +27,7 @@ export function Footer() {
               className="grayscale transition-all hover:grayscale-0"
             >
               <Image
-                src="https://picsum.photos/200/100"
+                src="https://images.unsplash.com/photo-1516709325695-3e6989437151?q=80&w=200&h=100&fit=crop"
                 alt="MGM University, Aurangabad"
                 width={150}
                 height={75}

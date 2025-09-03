@@ -50,7 +50,7 @@ export function OpenSourceFest() {
           </Button>
         </div>
         <Image
-          src="https://picsum.photos/600/600"
+          src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=600&h=600&fit=crop"
           width={600}
           height={600}
           alt="Open Source Fest"

@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section className="relative h-[80vh] min-h-[600px] w-full">
       <Image
-        src="https://picsum.photos/1920/1080"
+        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1920&h=1080&fit=crop"
         alt="E-Cell IICT Eureka"
         fill
         priority
