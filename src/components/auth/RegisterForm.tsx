@@ -62,7 +62,7 @@ export function RegisterForm() {
         title: 'Registration Successful',
         description: state.message,
       });
-      router.push('/');
+      router.push('/home');
     }
   }, [state, toast, router]);
 
