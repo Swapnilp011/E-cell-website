@@ -7,8 +7,9 @@ import {
 } from '@/ai/flows/leadership-testimonial-improvements';
 import { z } from 'zod';
 import admin from '@/lib/firebase/admin';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { auth as clientAuth } from '@/lib/firebase/client';
+import { getAuth } from 'firebase-admin/auth';
+import { headers } from 'next/headers';
 
 // Testimonial improvement schema and state
 const testimonialSchema = z.object({
@@ -198,4 +199,61 @@ export async function loginUser(
   // such as setting up a session or logging the event. For now, it just confirms success.
   
   return { message: 'Login successful!', success: true };
+}
+
+
+async function getAuthenticatedUser() {
+  const idToken = headers().get('Authorization')?.split('Bearer ')[1];
+  if (!idToken) {
+    return null;
+  }
+  try {
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    return decodedToken;
+  } catch (error) {
+    console.error('Error verifying token:', error);
+    return null;
+  }
+}
+
+export type UserProfile = {
+  uid: string;
+  name: string;
+  email: string;
+  college: string;
+  department: string;
+  division: string;
+  yearOfStudy: string;
+  createdAt: string;
+};
+
+export async function getUserProfile(): Promise<UserProfile | null> {
+  const user = await getAuthenticatedUser();
+  if (!user) {
+    return null;
+  }
+
+  try {
+    const db = admin.firestore();
+    const userDoc = await db.collection('users').doc(user.uid).get();
+
+    if (!userDoc.exists) {
+      return null;
+    }
+
+    const userData = userDoc.data();
+    return {
+      uid: user.uid,
+      name: userData?.name,
+      email: userData?.email,
+      college: userData?.college,
+      department: userData?.department,
+      division: userData?.division,
+      yearOfStudy: userData?.yearOfStudy,
+      createdAt: userData?.createdAt.toDate().toLocaleDateString(),
+    };
+  } catch (error) {
+    console.error('Error fetching user profile from Firestore:', error);
+    return null;
+  }
 }
