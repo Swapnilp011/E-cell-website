@@ -11,28 +11,33 @@ export function Footer() {
           <h3 className="mb-4 font-headline text-2xl font-bold">
             Proudly Affiliated With
           </h3>
-          <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-12">
             <Link
               href="https://www.ecell.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="grayscale transition-all hover:grayscale-0"
+              className="flex items-center gap-4 text-foreground transition-opacity hover:opacity-80"
             >
-              <ECellIITBombayLogo className="h-[75px] w-[150px]" />
+              <ECellIITBombayLogo className="h-[60px] w-[120px]" />
             </Link>
             <Link
               href="https://www.mgmu.ac.in/"
               target="_blank"
               rel="noopener noreferrer"
-              className="grayscale transition-all hover:grayscale-0"
+              className="flex items-center gap-4 text-foreground transition-opacity hover:opacity-80"
             >
               <Image
                 src="https://cdn.mgmtech.org/static/mgmu.ac.in/assets/images/LogoMGM.svg"
                 alt="MGM University, Aurangabad"
-                width={150}
-                height={75}
+                width={120}
+                height={60}
                 className="object-contain"
               />
+              <span className="text-left font-medium">
+                MGM University,
+                <br />
+                Aurangabad
+              </span>
             </Link>
           </div>
         </div>
