@@ -18,6 +18,8 @@ import { loginUser, type LoginFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
+import { auth } from '@/lib/firebase/client';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const initialState: LoginFormState = {
   message: '',
@@ -50,6 +52,31 @@ export function LoginForm() {
     }
   }, [state, toast]);
 
+  const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // Now call the server action, which in a real app might handle session creation
+      formAction(formData);
+    } catch (error: any) {
+      let errorMessage = 'An unexpected error occurred.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        errorMessage = 'Invalid email or password.';
+      }
+      // Manually set the state to show the error
+      formAction(new FormData()); // Clear previous state
+      (formAction as any)({
+        ...initialState,
+        message: errorMessage,
+        errors: { general: [errorMessage] },
+      });
+    }
+  };
+
   return (
     <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
@@ -62,7 +89,7 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-4">
+        <form onSubmit={handleClientLogin} className="space-y-4">
            {state?.errors?.general && (
              <Alert variant="destructive">
                <Terminal className="h-4 w-4" />
@@ -79,6 +106,7 @@ export function LoginForm() {
               name="email"
               type="email"
               placeholder="name@example.com"
+              required
             />
             {state?.errors?.email && (
               <p className="text-sm text-destructive">{state.errors.email[0]}</p>
@@ -91,6 +119,7 @@ export function LoginForm() {
               name="password"
               type="password"
               placeholder="••••••••"
+              required
             />
             {state?.errors?.password && (
               <p className="text-sm text-destructive">
