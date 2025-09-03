@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { ECellIITBombayLogo } from '../icons/ECellIITBombayLogo';
 
 export function Footer() {
   return (
@@ -16,14 +17,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="grayscale transition-all hover:grayscale-0"
             >
-              <Image
-                src="https://picsum.photos/200/100"
-                alt="E-Cell IIT Bombay"
-                width={150}
-                height={75}
-                className="object-contain"
-                data-ai-hint="logo iit bombay"
-              />
+              <ECellIITBombayLogo className="h-[75px] w-[150px]" />
             </Link>
             <Link
               href="https://www.mgmu.ac.in/"
