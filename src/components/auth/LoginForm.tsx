@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
@@ -20,6 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { auth } from '@/lib/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const initialState: LoginFormState = {
   message: '',
@@ -38,6 +39,7 @@ function SubmitButton() {
 export function LoginForm() {
   const [state, formAction] = useActionState(loginUser, initialState);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (state.message && !state.success) {
@@ -48,9 +50,9 @@ export function LoginForm() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      // Here you would typically redirect the user, e.g., router.push('/dashboard')
+      router.push('/');
     }
-  }, [state, toast]);
+  }, [state, toast, router]);
 
   const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,13 +69,13 @@ export function LoginForm() {
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         errorMessage = 'Invalid email or password.';
       }
-      // Manually set the state to show the error
-      formAction(new FormData()); // Clear previous state
-      (formAction as any)({
-        ...initialState,
-        message: errorMessage,
-        errors: { general: [errorMessage] },
-      });
+      
+      const errorFormData = new FormData();
+      errorFormData.set('email', email);
+      errorFormData.set('password', password);
+      errorFormData.set('error', errorMessage); // Pass error info
+      
+      formAction(errorFormData);
     }
   };
 

@@ -151,6 +151,7 @@ const loginSchema = z.object({
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
+  error: z.string().optional(),
 });
 
 export type LoginFormState = {
@@ -168,6 +169,18 @@ export async function loginUser(
   prevState: LoginFormState,
   formData: FormData
 ): Promise<LoginFormState> {
+
+  // If we get an error passed from the client-side, we immediately set that as the state.
+  const errorMessage = formData.get('error') as string | null;
+  if(errorMessage){
+     return {
+      message: errorMessage,
+      errors: { general: [errorMessage] },
+      success: false,
+    };
+  }
+
+
   const validatedFields = loginSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -183,7 +196,6 @@ export async function loginUser(
   // Client-side sign-in handles the actual authentication.
   // This server action is for any additional server-side logic after a successful client-side login,
   // such as setting up a session or logging the event. For now, it just confirms success.
-  // The actual password check happens on the client in LoginForm.tsx
   
   return { message: 'Login successful!', success: true };
 }
