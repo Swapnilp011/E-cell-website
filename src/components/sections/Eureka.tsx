@@ -74,7 +74,7 @@ export function Eureka() {
         </div>
         <div className="mt-12 flex justify-center">
           <Button asChild size="lg">
-            <Link href="#">Register for Eureka</Link>
+            <Link href="/register">Register for Eureka</Link>
           </Button>
         </div>
       </div>
