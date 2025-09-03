@@ -24,7 +24,7 @@ const registerSchema = z.object({
     .string()
     .min(2, { message: 'College name must be at least 2 characters' }),
   department: z.string().min(1, { message: 'Please enter a department' }),
-  div: z.string().min(1, { message: 'Please enter a division' }),
+  div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
 });
 
 type RegisterFormInputs = z.infer<typeof registerSchema>;
@@ -118,7 +118,7 @@ export function RegisterForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="div">Division</Label>
-              <Input id="div" placeholder="e.g. A" {...register('div')} />
+              <Input id="div" placeholder="e.g. A1" {...register('div')} />
               {errors.div && (
                 <p className="text-sm text-destructive">{errors.div.message}</p>
               )}
