@@ -55,7 +55,7 @@ export function OpenSourceFest() {
           height={600}
           alt="Open Source Fest"
           className="mx-auto aspect-square overflow-hidden rounded-full object-cover"
-          data-ai-hint="open source code"
+          data-ai-hint="entrepreneurship business"
         />
       </div>
     </section>
