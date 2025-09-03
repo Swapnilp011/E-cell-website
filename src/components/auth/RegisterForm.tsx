@@ -16,6 +16,13 @@ import { registerUser, type RegisterFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const initialState: RegisterFormState = {
   message: '',
@@ -108,6 +115,23 @@ export function RegisterForm() {
               <p className="text-sm text-destructive">
                 {state.errors.college[0]}
               </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="year">Year of Study</Label>
+            <Select name="year">
+              <SelectTrigger id="year">
+                <SelectValue placeholder="Select your year" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="First Year">First Year</SelectItem>
+                <SelectItem value="Second Year">Second Year</SelectItem>
+                <SelectItem value="Third Year">Third Year</SelectItem>
+                <SelectItem value="Final Year">Final Year</SelectItem>
+              </SelectContent>
+            </Select>
+            {state?.errors?.year && (
+              <p className="text-sm text-destructive">{state.errors.year[0]}</p>
             )}
           </div>
           <div className="grid grid-cols-2 gap-4">

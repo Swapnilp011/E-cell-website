@@ -66,6 +66,7 @@ const registerSchema = z.object({
     .min(2, { message: 'College name must be at least 2 characters' }),
   department: z.string().min(1, { message: 'Please enter a department' }),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
+  year: z.string().min(1, { message: 'Please select your year of study' }),
 });
 
 export type RegisterFormState = {
@@ -77,6 +78,7 @@ export type RegisterFormState = {
     college?: string[];
     department?: string[];
     div?: string[];
+    year?: string[];
   };
   success: boolean;
 };
