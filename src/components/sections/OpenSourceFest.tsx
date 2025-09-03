@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { CodeIcon, MicIcon, HammerIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export function OpenSourceFest() {
   return (
@@ -8,15 +9,15 @@ export function OpenSourceFest() {
       <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">
         <div className="space-y-4">
           <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-            Open-Source Fest
+            Collaborative Event
           </div>
           <h2 className="font-headline text-3xl font-bold tracking-tighter md:text-4xl/tight">
-            Celebrate, Build, and Learn with Open Source
+            Opn-Source Fest
           </h2>
           <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-            Our Open-Source Fest is a month-long celebration of open-source
-            software, featuring hackathons, workshops, and talks from leading
-            figures in the open-source community.
+            A celebration of the open-source spirit. Join developers,
+            designers, and tech enthusiasts to learn, build, and contribute to
+            impactful open-source projects.
           </p>
           <ul className="grid gap-4 py-4">
             <li className="flex items-center gap-4">
@@ -24,7 +25,7 @@ export function OpenSourceFest() {
                 <HammerIcon className="h-5 w-5 text-accent" />
               </div>
               <span className="font-medium">
-                Hackathons on real-world projects
+                Project Hackathons on real-world projects
               </span>
             </li>
             <li className="flex items-center gap-4">
@@ -32,7 +33,7 @@ export function OpenSourceFest() {
                 <CodeIcon className="h-5 w-5 text-accent" />
               </div>
               <span className="font-medium">
-                Workshops on cutting-edge technologies
+                Expert Workshops on Git, Docker, CI/CD
               </span>
             </li>
             <li className="flex items-center gap-4">
@@ -40,11 +41,13 @@ export function OpenSourceFest() {
                 <MicIcon className="h-5 w-5 text-accent" />
               </div>
               <span className="font-medium">
-                Inspiring talks from industry experts
+                Inspiring Talks from FOSS community leaders
               </span>
             </li>
           </ul>
-          <Button>Learn More</Button>
+          <Button asChild>
+            <Link href="#">Join the Fest</Link>
+          </Button>
         </div>
         <Image
           src="https://picsum.photos/600/600"

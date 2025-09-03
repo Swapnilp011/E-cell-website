@@ -1,34 +1,25 @@
 export function Timeline() {
   const events = [
     {
-      year: '2020',
-      title: 'Inception of E-Cell IICT',
+      date: '28 July 2024',
+      title: 'Foundation of E-Cell IICT',
+      location: 'Institute of Chemical Technology, Mumbai',
       description:
-        'The journey began with a small group of passionate students aiming to build an entrepreneurial ecosystem.',
+        'The Entrepreneurship Cell was officially established at UDICT, ICT Mumbai. Core objectives set to foster innovation and entrepreneurial mindset among students. Initial core team formation and planning for the academic year.',
     },
     {
-      year: '2021',
-      title: 'First Eureka Ideathon',
+      date: '1 September 2024',
+      title: 'Launch Event',
+      location: 'E-Cell IICT',
       description:
-        'Successfully hosted our first major event, attracting over 200 participants from across the country.',
+        'Introduction of E-Cell IICT to students, discussing the mission, vision, and upcoming plans. Engaged over 100 students from various departments. Conducted a session on entrepreneurship and innovation.',
     },
     {
-      year: '2022',
-      title: 'Launched Mentorship Program',
+      date: '15 September 2024',
+      title: 'QR Quest & Srujan',
+      location: 'Ideation Contest',
       description:
-        'Connected aspiring student entrepreneurs with experienced industry mentors.',
-    },
-    {
-      year: '2023',
-      title: 'Inaugural Open-Source Fest',
-      description:
-        'Celebrated the spirit of open source with a month-long festival of coding and learning.',
-    },
-    {
-      year: '2024',
-      title: 'Expanded to 50+ Members',
-      description:
-        'Grew our team and increased our impact on campus and beyond.',
+        'A fun-filled QR code hunt across the campus to promote entrepreneurial thinking. Srujan, an idea-pitching competition, saw participation from over 50 teams. Winners were awarded seed funding and mentorship opportunities.',
     },
   ];
 
@@ -37,16 +28,9 @@ export function Timeline() {
       <div className="container max-w-3xl">
         <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-              Our Journey
-            </div>
             <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
-              Milestones & Achievements
+              Achievements and initiatives.
             </h2>
-            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
-              A look back at the key moments that have shaped E-Cell IICT into
-              what it is today.
-            </p>
           </div>
         </div>
         <div className="relative">
@@ -56,11 +40,12 @@ export function Timeline() {
               <div className="absolute top-1 left-4 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-background bg-primary"></div>
               <div className="rounded-lg border bg-card p-4 shadow-sm transition-all hover:shadow-md hover:shadow-primary/20">
                 <p className="mb-1 text-sm font-semibold text-accent">
-                  {event.year}
+                  {event.date}
                 </p>
                 <h4 className="font-headline text-lg font-bold">
                   {event.title}
                 </h4>
+                <p className="mb-2 text-sm text-muted-foreground">{event.location}</p>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {event.description}
                 </p>

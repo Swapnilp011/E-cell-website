@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export function Team() {
   const teamMembers = [
@@ -55,7 +56,7 @@ export function Team() {
       name: 'Krushna G. Bhosle',
       role: 'Video Creation & Editing Head',
       description:
-        'Our master storyteller in motion. Krushna crafts compelling narratives from raw footage, producing high-impact videos that captivate our audience. He doesn\'\'\'t just edit clips; he directs the visual heartbeat of our content.',
+        "Our master storyteller in motion. Krushna crafts compelling narratives from raw footage, producing high-impact videos that captivate our audience. He doesn't just edit clips; he directs the visual heartbeat of our content.",
       imageUrl: 'https://picsum.photos/200/200?random=7',
       dataAiHint: 'man creative',
     },
@@ -74,11 +75,8 @@ export function Team() {
       <div className="container">
         <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-              Meet the Core Team
-            </div>
             <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
-              The Minds Behind the Magic
+              Meet the Core Team
             </h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
               The driving force behind E-Cell IICT. Meet the dedicated

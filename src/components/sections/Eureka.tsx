@@ -3,10 +3,10 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MedalIcon, LightbulbIcon, TrophyIcon } from 'lucide-react';
+import { TrophyIcon, LightbulbIcon, UsersIcon } from 'lucide-react';
+import Link from 'next/link';
 
 export function Eureka() {
   return (
@@ -15,15 +15,16 @@ export function Eureka() {
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-              Eureka Ideathon
+              The Flagship Event
             </div>
             <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
-              Turn Your Idea into Reality
+              Eureka
             </h2>
             <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Eureka is our flagship ideathon event, where brilliant minds come
-              together to solve real-world problems, build amazing products, and
-              compete for exciting prizes.
+              Eureka is our premier ideathon, a battleground for the brightest
+              minds to transform revolutionary ideas into reality. Compete,
+              innovate, and get a chance to win from a massive prize pool and
+              receive expert mentorship.
             </p>
           </div>
         </div>
@@ -31,48 +32,50 @@ export function Eureka() {
           <Card>
             <CardHeader className="flex flex-row items-center gap-4">
               <div className="rounded-full bg-primary/10 p-3">
-                <LightbulbIcon className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle className="font-headline">
-                Rules & Regulations
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Open to all students. Teams of 2-4. Submissions must be
-                original. Full rulebook available on registration.
-              </CardDescription>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center gap-4">
-              <div className="rounded-full bg-primary/10 p-3">
-                <MedalIcon className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle className="font-headline">Prizes & Perks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Win cash prizes up to $5000, mentorship from industry experts,
-                and incubation opportunities for your startup.
-              </CardDescription>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center gap-4">
-              <div className="rounded-full bg-primary/10 p-3">
                 <TrophyIcon className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle className="font-headline">Register Now</CardTitle>
+              <CardTitle className="font-headline">Massive Prize Pool</CardTitle>
             </CardHeader>
             <CardContent>
-              <CardDescription>
-                Registrations are now open! Secure your spot and get ready to
-                innovate.
-              </CardDescription>
-              <Button className="mt-4 w-full">Register</Button>
+              <p>
+                Win substantial cash prizes and resources to kickstart your
+                venture.
+              </p>
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <div className="rounded-full bg-primary/10 p-3">
+                <LightbulbIcon className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="font-headline">Expert Mentorship</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                Gain invaluable guidance from seasoned entrepreneurs and
+                industry leaders.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-4">
+              <div className="rounded-full bg-primary/10 p-3">
+                <UsersIcon className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="font-headline">Networking</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>
+                Connect with investors, founders, and a community of fellow
+                innovators.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="mt-12 flex justify-center">
+          <Button asChild size="lg">
+            <Link href="#">Register for Eureka</Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'E-Cell Innovate',
-  description: 'Fueling the Next Wave of Innovation with E-Cell IICT.',
+  title: 'E-Cell IICT',
+  description: 'Fostering the Next Generation of Innovators.',
 };
 
 export default function RootLayout({
@@ -28,7 +27,6 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         {children}
-        <Toaster />
       </body>
     </html>
   );

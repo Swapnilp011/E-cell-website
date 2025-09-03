@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { SparklesIcon } from 'lucide-react';
 
 export function Header() {
@@ -10,15 +11,15 @@ export function Header() {
             <SparklesIcon className="h-5 w-5" />
           </div>
           <span className="font-headline text-lg font-bold">
-            E-Cell Innovate
+            E-Cell IICT
           </span>
         </Link>
         <nav className="hidden flex-1 items-center gap-4 text-sm font-medium md:flex">
           <Link
-            href="#events"
+            href="#about"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
-            Events
+            About
           </Link>
           <Link
             href="#timeline"
@@ -27,10 +28,10 @@ export function Header() {
             Timeline
           </Link>
           <Link
-            href="#ai-assistant"
+            href="#events"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
-            AI Assistant
+            Events
           </Link>
           <Link
             href="#team"
@@ -39,6 +40,11 @@ export function Header() {
             Team
           </Link>
         </nav>
+        <div className="flex flex-1 items-center justify-end gap-2">
+          <Button asChild>
+            <Link href="#eureka">Eureka Registration</Link>
+          </Button>
+        </div>
       </div>
     </header>
   );
