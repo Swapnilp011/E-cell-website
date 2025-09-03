@@ -4,40 +4,68 @@ import { Card, CardContent } from '@/components/ui/card';
 export function Team() {
   const teamMembers = [
     {
-      name: 'Alice Johnson',
-      role: 'President',
+      name: 'Kartik D. Sakhare',
+      role: 'Head',
+      description:
+        'The strategic visionary steering the E-Cell ship. Kartik blends leadership with friendship, ensuring the squad not only meets deadlines but also thrives in a collaborative and inspiring environment. He keeps the chaos classy and the team motivated.',
       imageUrl: 'https://picsum.photos/200/200?random=1',
       dataAiHint: 'person smiling',
     },
     {
-      name: 'Bob Williams',
-      role: 'Vice President',
+      name: 'Abhay K. Chonde',
+      role: 'Vice-Head',
+      description:
+        "The silent strategist turning ambitious plans into actionable results. Abhay's sharp instincts and operational expertise are the bedrock of our execution, providing the clarity and direction needed to navigate complex challenges and keep the team buzzing.",
       imageUrl: 'https://picsum.photos/200/200?random=2',
       dataAiHint: 'person professional',
     },
     {
-      name: 'Charlie Brown',
-      role: 'Head of Events',
+      name: 'Sahil N. Jadhav',
+      role: 'Tech Head',
+      description:
+        'The wizard behind the wires and the architect of our digital presence. Sahil leads the technical team, transforming ideas into flawless websites and applications. His expertise in modern web technologies ensures our digital experiences are always world-class.',
       imageUrl: 'https://picsum.photos/200/200?random=3',
       dataAiHint: 'person glasses',
     },
     {
-      name: 'Diana Prince',
-      role: 'Marketing Head',
+      name: 'Vikas V. Hiwale',
+      role: 'Event Head',
+      description:
+        'The master of execution who makes every event an unforgettable experience. Vikas handles the end-to-end logistics and coordination, ensuring that from ideation to wrap-up, every detail is flawlessly managed. He is the bar for event organization.',
       imageUrl: 'https://picsum.photos/200/200?random=4',
-      dataAiHint: 'woman portrait',
-    },
-    {
-      name: 'Ethan Hunt',
-      role: 'Technical Lead',
-      imageUrl: 'https://picsum.photos/200/200?random=5',
       dataAiHint: 'man serious',
     },
     {
-      name: 'Fiona Glenanne',
-      role: 'Finance Head',
+      name: 'Sakshi D. Gadekar',
+      role: 'Social Media Head',
+      description:
+        'The mind behind the moodboard and the voice of our online brand. Sakshi crafts our digital narrative, dancing with algorithms to build an engaged community. Her strategies ensure our message resonates across all social platforms.',
+      imageUrl: 'https://picsum.photos/200/200?random=5',
+      dataAiHint: 'woman portrait',
+    },
+    {
+      name: 'Janhavi S. Mahamune',
+      role: 'PR Head',
+      description:
+        'The powerhouse of influence and communication. Janhavi builds bridges with media and partners, shaping our public image with flair and focus. She ensures our story is told compellingly and reaches the right audience.',
       imageUrl: 'https://picsum.photos/200/200?random=6',
       dataAiHint: 'woman professional',
+    },
+    {
+      name: 'Krushna G. Bhosle',
+      role: 'Video Creation & Editing Head',
+      description:
+        'Our master storyteller in motion. Krushna crafts compelling narratives from raw footage, producing high-impact videos that captivate our audience. He doesn\'\'\'t just edit clips; he directs the visual heartbeat of our content.',
+      imageUrl: 'https://picsum.photos/200/200?random=7',
+      dataAiHint: 'man creative',
+    },
+    {
+      name: 'Siya P. Lahoti',
+      role: 'Graphic Designer',
+      description:
+        "The visual architect who defines our brand's aesthetic. Siya transforms blank canvases into branded brilliance, ensuring every design is not just beautiful but also strategically aligned with our mission. She designs the vibe of E-Cell.",
+      imageUrl: 'https://picsum.photos/200/200?random=8',
+      dataAiHint: 'woman artistic',
     },
   ];
 
@@ -47,20 +75,24 @@ export function Team() {
         <div className="mb-12 flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
             <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm text-secondary-foreground">
-              Our Team
+              Meet the Core Team
             </div>
             <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
               The Minds Behind the Magic
             </h2>
+            <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed">
+              The driving force behind E-Cell IICT. Meet the dedicated
+              individuals who make it all happen.
+            </p>
           </div>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {teamMembers.map((member, index) => (
             <Card
               key={index}
-              className="transform text-center transition-transform hover:scale-105 hover:shadow-lg hover:shadow-primary/20"
+              className="group transform text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30"
             >
-              <CardContent className="flex flex-col items-center p-6">
+              <CardContent className="relative flex flex-col items-center p-6">
                 <Avatar className="mb-4 h-24 w-24 border-2 border-primary">
                   <AvatarImage
                     src={member.imageUrl}
@@ -73,6 +105,11 @@ export function Team() {
                   {member.name}
                 </h3>
                 <p className="text-primary">{member.role}</p>
+                <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/80 p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <p className="text-center text-sm text-primary-foreground">
+                    {member.description}
+                  </p>
+                </div>
               </CardContent>
             </Card>
           ))}
