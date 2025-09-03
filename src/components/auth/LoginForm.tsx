@@ -10,32 +10,45 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
+import { loginUser, type LoginFormState } from '@/lib/actions';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Terminal } from 'lucide-react';
 
-const loginSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-});
+const initialState: LoginFormState = {
+  message: '',
+  success: false,
+};
 
-type LoginFormInputs = z.infer<typeof loginSchema>;
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? 'Logging In...' : 'Login'}
+    </Button>
+  );
+}
 
 export function LoginForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormInputs>({
-    resolver: zodResolver(loginSchema),
-  });
+  const [state, formAction] = useActionState(loginUser, initialState);
+  const { toast } = useToast();
 
-  const onSubmit: SubmitHandler<LoginFormInputs> = (data) => {
-    console.log(data);
-    // Handle login logic here
-  };
+  useEffect(() => {
+    if (state.message && !state.success) {
+      // We are showing the error in an Alert, so no need for a toast.
+    }
+    if (state.success) {
+      toast({
+        title: 'Login Successful',
+        description: 'Welcome back!',
+      });
+      // Here you would typically redirect the user, e.g., router.push('/dashboard')
+    }
+  }, [state, toast]);
 
   return (
     <Card className="mx-auto w-full max-w-md">
@@ -49,36 +62,43 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form action={formAction} className="space-y-4">
+           {state?.errors?.general && (
+             <Alert variant="destructive">
+               <Terminal className="h-4 w-4" />
+               <AlertTitle>Login Failed</AlertTitle>
+               <AlertDescription>
+                 {state.errors.general[0]}
+               </AlertDescription>
+             </Alert>
+           )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
-              {...register('email')}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
+            {state?.errors?.email && (
+              <p className="text-sm text-destructive">{state.errors.email[0]}</p>
             )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               placeholder="••••••••"
-              {...register('password')}
             />
-            {errors.password && (
+            {state?.errors?.password && (
               <p className="text-sm text-destructive">
-                {errors.password.message}
+                {state.errors.password[0]}
               </p>
             )}
           </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
+          <SubmitButton />
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Don't have an account?{' '}
