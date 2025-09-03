@@ -77,12 +77,6 @@ export function Header() {
           >
             Events
           </Link>
-          <Link
-            href="/home#team"
-            className="text-foreground/60 transition-colors hover:text-foreground/80"
-          >
-            Team
-          </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end gap-2">
           {loading ? (
