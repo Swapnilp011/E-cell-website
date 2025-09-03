@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const initialState: RegisterFormState = {
   message: '',
@@ -43,6 +44,7 @@ function SubmitButton() {
 export function RegisterForm() {
   const [state, formAction] = useActionState(registerUser, initialState);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (state.message && !state.success) {
@@ -60,10 +62,9 @@ export function RegisterForm() {
         title: 'Registration Successful',
         description: state.message,
       });
-      // Consider redirecting the user to the login page or a dashboard
-      // For example: window.location.href = '/login';
+      router.push('/');
     }
-  }, [state, toast]);
+  }, [state, toast, router]);
 
   return (
     <Card className="mx-auto w-full max-w-md">
