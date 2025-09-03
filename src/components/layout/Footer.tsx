@@ -38,11 +38,6 @@ export function Footer() {
                 height={60}
                 className="object-contain"
               />
-              <span className="text-left font-medium">
-                MGM University,
-                <br />
-                Aurangabad
-              </span>
             </Link>
           </div>
         </div>
