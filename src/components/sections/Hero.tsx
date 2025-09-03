@@ -19,7 +19,7 @@ export function Hero() {
           Fostering the Next Generation of Innovators
         </h1>
         <p className="mt-6 max-w-3xl text-lg text-primary-foreground/80 md:text-xl">
-          E-Cell IICT Eureka
+          E-Cell IICT Eureka, MGM University
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-4">
           <Button size="lg" asChild>
