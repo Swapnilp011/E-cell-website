@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ECellIITBombayLogo } from '../icons/ECellIITBombayLogo';
 import { Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
@@ -18,7 +17,13 @@ export function Footer() {
               rel="noopener noreferrer"
               className="flex items-center gap-4 text-foreground transition-opacity hover:opacity-80"
             >
-              <ECellIITBombayLogo className="h-[60px] w-[120px]" />
+              <Image
+                src="https://www.ecell.in/assets/images/logo.webp"
+                alt="E-Cell IIT Bombay"
+                width={120}
+                height={60}
+                className="h-[60px] w-[120px] object-contain"
+              />
             </Link>
             <Link
               href="https://www.mgmu.ac.in/"

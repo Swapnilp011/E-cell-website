@@ -39,7 +39,13 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.mgmtech.org',
         port: '',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.ecell.in',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   experimental: {
