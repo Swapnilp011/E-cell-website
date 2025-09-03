@@ -38,6 +38,7 @@ function SubmitButton() {
 
 export function LoginForm() {
   const [state, formAction] = useActionState(loginUser, initialState);
+  const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -63,7 +64,9 @@ export function LoginForm() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // Now call the server action, which in a real app might handle session creation
-      formAction(formData);
+      startTransition(() => {
+        formAction(formData);
+      });
     } catch (error: any) {
       let errorMessage = 'An unexpected error occurred.';
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
@@ -75,7 +78,9 @@ export function LoginForm() {
       errorFormData.set('password', password);
       errorFormData.set('error', errorMessage); // Pass error info
       
-      formAction(errorFormData);
+      startTransition(() => {
+        formAction(errorFormData);
+      });
     }
   };
 
