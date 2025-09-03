@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ECellIITBombayLogo } from '../icons/ECellIITBombayLogo';
+import { Instagram, Linkedin } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -40,6 +41,26 @@ export function Footer() {
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             Designed & Built by E-Cell IICT Tech Team
           </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="https://www.instagram.com/e_cell_iict/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Instagram className="h-6 w-6" />
+              <span className="sr-only">Instagram</span>
+            </Link>
+            <Link
+              href="https://www.linkedin.com/company/e-cell-iict/posts/?feedView=all"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Linkedin className="h-6 w-6" />
+              <span className="sr-only">LinkedIn</span>
+            </Link>
+          </div>
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} E-Cell IICT. All rights reserved.
           </p>
