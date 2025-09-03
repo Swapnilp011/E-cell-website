@@ -27,12 +27,11 @@ export function Footer() {
               className="grayscale transition-all hover:grayscale-0"
             >
               <Image
-                src="https://images.unsplash.com/photo-1516709325695-3e6989437151?q=80&w=200&h=100&fit=crop"
+                src="https://cdn.mgmtech.org/static/mgmu.ac.in/assets/images/LogoMGM.svg"
                 alt="MGM University, Aurangabad"
                 width={150}
                 height={75}
                 className="object-contain"
-                data-ai-hint="logo university"
               />
             </Link>
           </div>
