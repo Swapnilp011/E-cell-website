@@ -10,38 +10,46 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useFormState, useFormStatus } from 'react-dom';
+import { registerUser, type RegisterFormState } from '@/lib/actions';
+import { useEffect } from 'react';
+import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
 
-const registerSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  email: z.string().email({ message: 'Invalid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-  college: z
-    .string()
-    .min(2, { message: 'College name must be at least 2 characters' }),
-  department: z.string().min(1, { message: 'Please enter a department' }),
-  div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
-});
+const initialState: RegisterFormState = {
+  message: '',
+  success: false,
+};
 
-type RegisterFormInputs = z.infer<typeof registerSchema>;
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? 'Creating Account...' : 'Create Account'}
+    </Button>
+  );
+}
 
 export function RegisterForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormInputs>({
-    resolver: zodResolver(registerSchema),
-  });
+  const [state, formAction] = useFormState(registerUser, initialState);
+  const { toast } = useToast();
 
-  const onSubmit: SubmitHandler<RegisterFormInputs> = (data) => {
-    console.log(data);
-    // Handle registration logic here
-  };
+  useEffect(() => {
+    if (state.message && !state.success) {
+      toast({
+        title: 'Registration Failed',
+        description: state.message,
+        variant: 'destructive',
+      });
+    }
+    if (state.success) {
+      toast({
+        title: 'Registration Successful',
+        description: state.message,
+      });
+    }
+  }, [state, toast]);
 
   return (
     <Card className="mx-auto w-full max-w-md">
@@ -55,37 +63,37 @@ export function RegisterForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="John Doe" {...register('name')} />
-            {errors.name && (
-              <p className="text-sm text-destructive">{errors.name.message}</p>
+            <Input id="name" name="name" placeholder="John Doe" />
+            {state?.errors?.name && (
+              <p className="text-sm text-destructive">{state.errors.name[0]}</p>
             )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="name@example.com"
-              {...register('email')}
             />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email.message}</p>
+            {state?.errors?.email && (
+              <p className="text-sm text-destructive">{state.errors.email[0]}</p>
             )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <Input
               id="password"
+              name="password"
               type="password"
               placeholder="••••••••"
-              {...register('password')}
             />
-            {errors.password && (
+            {state?.errors?.password && (
               <p className="text-sm text-destructive">
-                {errors.password.message}
+                {state.errors.password[0]}
               </p>
             )}
           </div>
@@ -93,12 +101,12 @@ export function RegisterForm() {
             <Label htmlFor="college">College</Label>
             <Input
               id="college"
+              name="college"
               placeholder="MGMU's IICT"
-              {...register('college')}
             />
-            {errors.college && (
+            {state?.errors?.college && (
               <p className="text-sm text-destructive">
-                {errors.college.message}
+                {state.errors.college[0]}
               </p>
             )}
           </div>
@@ -107,26 +115,24 @@ export function RegisterForm() {
               <Label htmlFor="department">Department</Label>
               <Input
                 id="department"
+                name="department"
                 placeholder="e.g. CSE"
-                {...register('department')}
               />
-              {errors.department && (
+              {state?.errors?.department && (
                 <p className="text-sm text-destructive">
-                  {errors.department.message}
+                  {state.errors.department[0]}
                 </p>
               )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="div">Division</Label>
-              <Input id="div" placeholder="e.g. A1" {...register('div')} />
-              {errors.div && (
-                <p className="text-sm text-destructive">{errors.div.message}</p>
+              <Input id="div" name="div" placeholder="e.g. A1" />
+              {state?.errors?.div && (
+                <p className="text-sm text-destructive">{state.errors.div[0]}</p>
               )}
             </div>
           </div>
-          <Button type="submit" className="w-full">
-            Create Account
-          </Button>
+          <SubmitButton />
         </form>
         <p className="mt-4 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
