@@ -23,6 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Terminal } from 'lucide-react';
 
 const initialState: RegisterFormState = {
   message: '',
@@ -44,17 +46,22 @@ export function RegisterForm() {
 
   useEffect(() => {
     if (state.message && !state.success) {
-      toast({
-        title: 'Registration Failed',
-        description: state.message,
-        variant: 'destructive',
-      });
+      // Error messages are now shown in an Alert, but we can still toast for general server errors
+      if(state.errors?.general) {
+        toast({
+          title: 'Registration Failed',
+          description: state.message,
+          variant: 'destructive',
+        });
+      }
     }
     if (state.success) {
       toast({
         title: 'Registration Successful',
         description: state.message,
       });
+      // Consider redirecting the user to the login page or a dashboard
+      // For example: window.location.href = '/login';
     }
   }, [state, toast]);
 
@@ -71,9 +78,18 @@ export function RegisterForm() {
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-4">
+           {state?.errors?.general && (
+             <Alert variant="destructive">
+               <Terminal className="h-4 w-4" />
+               <AlertTitle>Registration Failed</AlertTitle>
+               <AlertDescription>
+                 {state.errors.general[0]}
+               </AlertDescription>
+             </Alert>
+           )}
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" placeholder="John Doe" />
+            <Input id="name" name="name" placeholder="John Doe" required />
             {state?.errors?.name && (
               <p className="text-sm text-destructive">{state.errors.name[0]}</p>
             )}
@@ -85,6 +101,7 @@ export function RegisterForm() {
               name="email"
               type="email"
               placeholder="name@example.com"
+              required
             />
             {state?.errors?.email && (
               <p className="text-sm text-destructive">{state.errors.email[0]}</p>
@@ -97,6 +114,7 @@ export function RegisterForm() {
               name="password"
               type="password"
               placeholder="••••••••"
+              required
             />
             {state?.errors?.password && (
               <p className="text-sm text-destructive">
@@ -110,6 +128,7 @@ export function RegisterForm() {
               id="college"
               name="college"
               placeholder="MGMU's IICT"
+              required
             />
             {state?.errors?.college && (
               <p className="text-sm text-destructive">
@@ -119,7 +138,7 @@ export function RegisterForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="year">Year of Study</Label>
-            <Select name="year">
+            <Select name="year" required>
               <SelectTrigger id="year">
                 <SelectValue placeholder="Select your year" />
               </SelectTrigger>
@@ -141,6 +160,7 @@ export function RegisterForm() {
                 id="department"
                 name="department"
                 placeholder="e.g. CSE"
+                required
               />
               {state?.errors?.department && (
                 <p className="text-sm text-destructive">
@@ -150,7 +170,7 @@ export function RegisterForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="div">Division</Label>
-              <Input id="div" name="div" placeholder="e.g. A1" />
+              <Input id="div" name="div" placeholder="e.g. A1" required />
               {state?.errors?.div && (
                 <p className="text-sm text-destructive">{state.errors.div[0]}</p>
               )}

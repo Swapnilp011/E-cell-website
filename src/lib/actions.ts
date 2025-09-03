@@ -81,6 +81,7 @@ export type RegisterFormState = {
     department?: string[];
     div?: string[];
     year?: string[];
+    general?: string[];
   };
   success: boolean;
 };
@@ -101,13 +102,26 @@ export async function registerUser(
     };
   }
 
-  const { email, password, name } = validatedFields.data;
+  const { email, password, name, college, department, div, year } =
+    validatedFields.data;
 
   try {
-    await admin.auth().createUser({
+    const userRecord = await admin.auth().createUser({
       email,
       password,
       displayName: name,
+    });
+    
+    // Now, save the rest of the user's details to Firestore
+    const db = admin.firestore();
+    await db.collection('users').doc(userRecord.uid).set({
+      name,
+      email,
+      college,
+      department,
+      division: div,
+      yearOfStudy: year,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     return { message: 'User registered successfully!', success: true };
@@ -116,10 +130,15 @@ export async function registerUser(
     let errorMessage = 'An unexpected error occurred. Please try again.';
     if (error.code === 'auth/email-already-exists') {
       errorMessage = 'This email address is already in use by another account.';
+       return {
+        message: errorMessage,
+        errors: { email: [errorMessage] },
+        success: false,
+      };
     }
     return {
       message: errorMessage,
-      errors: { email: [errorMessage] },
+      errors: { general: [errorMessage] },
       success: false,
     };
   }
@@ -161,46 +180,10 @@ export async function loginUser(
     };
   }
 
-  const { email, password } = validatedFields.data;
-
-  try {
-     // This is a client-side function, but we are in a server action.
-     // This will not work as expected for session management.
-     // A proper implementation would involve client-side login
-     // or a custom session cookie management on the server.
-     // For now, we will use a placeholder that mimics the check.
-    
-    // This is a simplified check. A real app would need to handle sessions.
-    await admin.auth().getUserByEmail(email);
-    // This doesn't actually check the password. Firebase Admin SDK can't do that.
-    // This is a known limitation. We're proceeding as if the password is correct
-    // for demonstration purposes. A full implementation would use the client SDK
-    // to sign in and then pass the ID token to the server.
-
-    return { message: 'Login successful!', success: true };
-  } catch (error: any) {
-    console.error('Firebase Login Error:', error);
-    let errorMessage = 'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/user-not-found') {
-      errorMessage = 'No user found with this email address.';
-       return {
-        message: errorMessage,
-        errors: { email: [errorMessage] },
-        success: false,
-      };
-    }
-     if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
-      errorMessage = 'Invalid email or password.';
-       return {
-        message: errorMessage,
-        errors: { general: [errorMessage] },
-        success: false,
-      };
-    }
-    return {
-      message: errorMessage,
-      errors: { general: [errorMessage] },
-      success: false,
-    };
-  }
+  // Client-side sign-in handles the actual authentication.
+  // This server action is for any additional server-side logic after a successful client-side login,
+  // such as setting up a session or logging the event. For now, it just confirms success.
+  // The actual password check happens on the client in LoginForm.tsx
+  
+  return { message: 'Login successful!', success: true };
 }
