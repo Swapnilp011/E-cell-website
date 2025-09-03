@@ -12,45 +12,48 @@ export function Header() {
         </Link>
         <nav className="hidden flex-1 items-center gap-4 text-sm font-medium md:flex">
           <Link
-            href="#about"
+            href="/#about"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             About
           </Link>
           <Link
-            href="#timeline"
+            href="/#timeline"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Timeline
           </Link>
           <Link
-            href="#eureka"
+            href="/#eureka"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Eureka
           </Link>
           <Link
-            href="#osf"
+            href="/#osf"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Opn-Source
           </Link>
           <Link
-            href="#events"
+            href="/#events"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Events
           </Link>
           <Link
-            href="#team"
+            href="/#team"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Team
           </Link>
         </nav>
         <div className="flex flex-1 items-center justify-end gap-2">
+          <Button asChild variant="ghost">
+            <Link href="/login">Login</Link>
+          </Button>
           <Button asChild>
-            <Link href="#eureka">Eureka Registration</Link>
+            <Link href="/register">Register</Link>
           </Button>
         </div>
       </div>
