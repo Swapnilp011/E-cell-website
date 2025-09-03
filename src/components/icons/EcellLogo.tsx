@@ -4,7 +4,7 @@ export function EcellLogo(props: React.ComponentProps<"div">) {
   return (
     <div {...props}>
         <Image
-          src="https://raw.githubusercontent.com/Swapnilp011/E-Cell-IICT-MGMU/main/public/logo.png"
+          src="https://raw.githubusercontent.com/Swapnilp011/E-Cell-IICT-MGMU/main/logo.png"
           alt="E-Cell IICT Logo"
           width={40}
           height={40}
