@@ -156,16 +156,16 @@ export function RegisterForm() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
+              <Label htmlFor="degree">Degree</Label>
               <Input
-                id="department"
-                name="department"
-                placeholder="e.g. CSE"
+                id="degree"
+                name="degree"
+                placeholder="e.g. B.Tech"
                 required
               />
-              {state?.errors?.department && (
+              {state?.errors?.degree && (
                 <p className="text-sm text-destructive">
-                  {state.errors.department[0]}
+                  {state.errors.degree[0]}
                 </p>
               )}
             </div>

@@ -147,8 +147,8 @@ export default function ProfilePage() {
           <p className="text-lg font-semibold">{userProfile.yearOfStudy}</p>
         </div>
         <div>
-          <p className="text-sm font-medium text-muted-foreground">Department</p>
-          <p className="text-lg font-semibold">{userProfile.department}</p>
+          <p className="text-sm font-medium text-muted-foreground">Degree</p>
+          <p className="text-lg font-semibold">{userProfile.degree}</p>
         </div>
         <div>
           <p className="text-sm font-medium text-muted-foreground">Division</p>
@@ -190,9 +190,9 @@ export default function ProfilePage() {
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="department">Department</Label>
-          <Input id="department" name="department" defaultValue={userProfile.department} required />
-          {state?.errors?.department && <p className="text-sm text-destructive">{state.errors.department[0]}</p>}
+          <Label htmlFor="degree">Degree</Label>
+          <Input id="degree" name="degree" defaultValue={userProfile.degree} required />
+          {state?.errors?.degree && <p className="text-sm text-destructive">{state.errors.degree[0]}</p>}
         </div>
         <div className="space-y-2">
           <Label htmlFor="div">Division</Label>
