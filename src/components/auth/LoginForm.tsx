@@ -51,12 +51,20 @@ export function LoginForm() {
         title: 'Login Successful',
         description: 'Welcome back!',
       });
-      router.push('/home');
+      router.push('/');
     }
   }, [state, toast, router]);
 
   const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!auth) {
+        startTransition(() => {
+            const errorFormData = new FormData();
+            errorFormData.set('error', 'Firebase not initialized. Please try again.');
+            formAction(errorFormData);
+        });
+        return;
+    }
     const formData = new FormData(event.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;

@@ -25,6 +25,10 @@ export function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
@@ -33,6 +37,7 @@ export function Header() {
   }, []);
 
   const handleLogout = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push('/');
   };
@@ -47,7 +52,7 @@ export function Header() {
   };
   
   // Hide header on login/register pages
-  if (pathname === '/login' || pathname === '/register') {
+  if (pathname === '/login' || pathname === '/register' || pathname === '/profile') {
     return null;
   }
 
@@ -60,26 +65,26 @@ export function Header() {
         </Link>
         <nav className="hidden flex-1 items-center gap-4 text-sm font-medium md:flex">
           <Link
-            href="/home#about"
+            href="/#about"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             About
           </Link>
           <Link
-            href="/home#timeline"
+            href="/#timeline"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Timeline
           </Link>
            <Link
-            href="/home#events"
+            href="/#events"
             className="text-foreground/60 transition-colors hover:text-foreground/80"
           >
             Events
           </Link>
           {!loading && user && (
             <Link
-              href="/home#team"
+              href="/#team"
               className="text-foreground/60 transition-colors hover:text-foreground/80"
             >
               Team

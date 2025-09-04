@@ -1,34 +1,50 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
 import { About } from '@/components/sections/About';
+import { Timeline } from '@/components/sections/Timeline';
 import { Eureka } from '@/components/sections/Eureka';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { OpenSourceFest } from '@/components/sections/OpenSourceFest';
+import { OtherInitiatives } from '@/components/sections/OtherInitiatives';
+import { LeadershipVoice } from '@/components/sections/LeadershipVoice';
+import { Team } from '@/components/sections/Team';
 
-export default function LandingPage() {
+export default function HomePage() {
+  const { auth } = useFirebaseAuth();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!auth) {
+        setLoading(false);
+        return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, [auth]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <Hero />
         <About />
+        <Timeline />
         <div id="events" className="scroll-mt-20">
           <Eureka />
+          <OpenSourceFest />
         </div>
-        <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container text-center">
-            <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">
-              Ready to Dive In?
-            </h2>
-            <p className="mx-auto my-4 max-w-[700px] text-muted-foreground md:text-xl">
-              Explore all our events, meet the team, and see what we've been up to.
-            </p>
-            <Button size="lg" asChild>
-              <Link href="/home">Explore Full Site</Link>
-            </Button>
-          </div>
-        </section>
+        <OtherInitiatives />
+        <LeadershipVoice />
+        {!loading && user && <Team />}
       </main>
       <Footer />
     </div>

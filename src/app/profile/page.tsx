@@ -52,6 +52,10 @@ export default function ProfilePage() {
   const [state, formAction] = useActionState(updateUserProfile, initialState);
 
   useEffect(() => {
+    if (!auth) {
+        router.push('/login');
+        return;
+    }
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
@@ -257,6 +261,14 @@ export default function ProfilePage() {
 
   return (
      <div className="flex min-h-screen flex-col bg-background">
+      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 max-w-screen-2xl items-center">
+            <Link href="/" className="mr-6 flex items-center gap-2">
+            <EcellLogo className="h-8 w-8" />
+            <span className="font-headline text-lg font-bold">E-Cell IICT</span>
+            </Link>
+        </div>
+      </header>
        <main className="flex flex-1 items-center justify-center p-4">
         <Card className="w-full max-w-2xl">
           <CardHeader className="text-center">
@@ -274,7 +286,7 @@ export default function ProfilePage() {
             <CardFooter className="flex justify-center gap-4 pt-4">
                 <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
                 <Button asChild variant="ghost">
-                <Link href="/home">Back to Home</Link>
+                <Link href="/">Back to Home</Link>
                 </Button>
             </CardFooter>
           )}
