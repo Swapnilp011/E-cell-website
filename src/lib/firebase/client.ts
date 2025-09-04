@@ -1,3 +1,4 @@
+'use client';
 // Import the functions you need from the SDKs you need
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
@@ -16,11 +17,13 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app;
+// this check is to prevent Vercel from initializing the app multiple times
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
 } else {
   app = getApp();
 }
+
 
 const auth = getAuth(app);
 
