@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { registerUser, type RegisterFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -45,6 +45,7 @@ export function RegisterForm() {
   const [state, formAction] = useActionState(registerUser, initialState);
   const { toast } = useToast();
   const router = useRouter();
+  const [showCustomCourse, setShowCustomCourse] = useState(false);
 
   useEffect(() => {
     if (state.message && !state.success) {
@@ -156,7 +157,7 @@ export function RegisterForm() {
           </div>
            <div className="space-y-2">
             <Label htmlFor="course">Course</Label>
-            <Select name="course" required>
+            <Select name="course" required onValueChange={(value) => setShowCustomCourse(value === 'Other')}>
               <SelectTrigger id="course">
                 <SelectValue placeholder="Select your course" />
               </SelectTrigger>
@@ -165,12 +166,27 @@ export function RegisterForm() {
                 <SelectItem value="M.Tech">M.Tech</SelectItem>
                 <SelectItem value="BCA">BCA</SelectItem>
                 <SelectItem value="MCA">MCA</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
             {state?.errors?.course && (
               <p className="text-sm text-destructive">{state.errors.course[0]}</p>
             )}
           </div>
+           {showCustomCourse && (
+            <div className="space-y-2">
+              <Label htmlFor="customCourse">Please specify your course</Label>
+              <Input
+                id="customCourse"
+                name="customCourse"
+                placeholder="e.g. B.Sc IT"
+                required
+              />
+               {state?.errors?.customCourse && (
+                <p className="text-sm text-destructive">{state.errors.customCourse[0]}</p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="degree">Degree</Label>

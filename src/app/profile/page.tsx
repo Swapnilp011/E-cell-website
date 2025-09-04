@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { auth } from '@/lib/firebase/client';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -45,6 +45,7 @@ export default function ProfilePage() {
   const [idToken, setIdToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [showCustomCourse, setShowCustomCourse] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -59,6 +60,10 @@ export default function ProfilePage() {
           setIdToken(token);
           const profile = await getUserProfile(token);
           setUserProfile(profile);
+          const standardCourses = ["B.Tech", "M.Tech", "BCA", "MCA"];
+          if (profile && !standardCourses.includes(profile.course)) {
+            setShowCustomCourse(true);
+          }
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
         }
@@ -81,7 +86,15 @@ export default function ProfilePage() {
       // Re-fetch profile to show updated data
       if (user) {
         user.getIdToken().then(token => {
-            getUserProfile(token).then(setUserProfile);
+            getUserProfile(token).then(profile => {
+                setUserProfile(profile);
+                 const standardCourses = ["B.Tech", "M.Tech", "BCA", "MCA"];
+                if (profile && !standardCourses.includes(profile.course)) {
+                    setShowCustomCourse(true);
+                } else {
+                    setShowCustomCourse(false);
+                }
+            });
         });
       }
     } else if (state.message && state.errors) {
@@ -188,7 +201,7 @@ export default function ProfilePage() {
       </div>
        <div className="space-y-2">
             <Label htmlFor="course">Course</Label>
-            <Select name="course" defaultValue={userProfile.course} required>
+            <Select name="course" defaultValue={showCustomCourse ? "Other" : userProfile.course} required onValueChange={(value) => setShowCustomCourse(value === 'Other')}>
               <SelectTrigger id="course">
                 <SelectValue placeholder="Select your course" />
               </SelectTrigger>
@@ -197,10 +210,26 @@ export default function ProfilePage() {
                 <SelectItem value="M.Tech">M.Tech</SelectItem>
                 <SelectItem value="BCA">BCA</SelectItem>
                 <SelectItem value="MCA">MCA</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
             </Select>
             {state?.errors?.course && <p className="text-sm text-destructive">{state.errors.course[0]}</p>}
           </div>
+        {showCustomCourse && (
+            <div className="space-y-2">
+              <Label htmlFor="customCourse">Please specify your course</Label>
+              <Input
+                id="customCourse"
+                name="customCourse"
+                defaultValue={showCustomCourse ? userProfile.course : ""}
+                placeholder="e.g. B.Sc IT"
+                required
+              />
+               {state?.errors?.customCourse && (
+                <p className="text-sm text-destructive">{state.errors.customCourse[0]}</p>
+              )}
+            </div>
+          )}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="degree">Degree</Label>

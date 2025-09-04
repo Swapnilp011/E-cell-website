@@ -69,8 +69,17 @@ const registerSchema = z.object({
     .min(2, { message: 'College name must be at least 2 characters' }),
   degree: z.string().min(1, { message: 'Please enter a degree' }),
   course: z.string().min(1, { message: 'Please select a course' }),
+  customCourse: z.string().optional(),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
   year: z.string().min(1, { message: 'Please select your year of study' }),
+}).refine(data => {
+    if (data.course === 'Other') {
+        return !!data.customCourse && data.customCourse.length > 0;
+    }
+    return true;
+}, {
+    message: "Please specify your course",
+    path: ["customCourse"],
 });
 
 export type RegisterFormState = {
@@ -82,6 +91,7 @@ export type RegisterFormState = {
     college?: string[];
     degree?: string[];
     course?: string[];
+    customCourse?: string[];
     div?: string[];
     year?: string[];
     general?: string[];
@@ -105,8 +115,10 @@ export async function registerUser(
     };
   }
 
-  const { email, password, name, college, degree, course, div, year } =
+  const { email, password, name, college, degree, course, customCourse, div, year } =
     validatedFields.data;
+
+  const finalCourse = course === 'Other' ? customCourse : course;
 
   try {
     const userRecord = await admin.auth().createUser({
@@ -122,7 +134,7 @@ export async function registerUser(
       email,
       college,
       degree,
-      course,
+      course: finalCourse,
       division: div,
       yearOfStudy: year,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -269,9 +281,18 @@ const updateProfileSchema = z.object({
   college: z.string().min(2, { message: 'College name must be at least 2 characters' }),
   degree: z.string().min(1, { message: 'Please enter a degree' }),
   course: z.string().min(1, { message: 'Please select a course' }),
+  customCourse: z.string().optional(),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
   year: z.string().min(1, { message: 'Please select your year of study' }),
   idToken: z.string(),
+}).refine(data => {
+    if (data.course === 'Other') {
+        return !!data.customCourse && data.customCourse.length > 0;
+    }
+    return true;
+}, {
+    message: "Please specify your course",
+    path: ["customCourse"],
 });
 
 export type UpdateProfileFormState = {
@@ -281,6 +302,7 @@ export type UpdateProfileFormState = {
     college?: string[];
     degree?: string[];
     course?: string[];
+    customCourse?: string[];
     div?: string[];
     year?: string[];
     general?: string[];
@@ -304,7 +326,9 @@ export async function updateUserProfile(
     };
   }
 
-  const { idToken, name, college, degree, course, div, year } = validatedFields.data;
+  const { idToken, name, college, degree, course, customCourse, div, year } = validatedFields.data;
+  
+  const finalCourse = course === 'Other' ? customCourse : course;
 
   const user = await getAuthenticatedUser(idToken);
   if (!user) {
@@ -322,7 +346,7 @@ export async function updateUserProfile(
       name,
       college,
       degree,
-      course,
+      course: finalCourse,
       division: div,
       yearOfStudy: year,
     });
