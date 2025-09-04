@@ -7,6 +7,7 @@ import { Eureka } from '@/components/sections/Eureka';
 import { OpenSourceFest } from '@/components/sections/OpenSourceFest';
 import { OtherInitiatives } from '@/components/sections/OtherInitiatives';
 import { LeadershipVoice } from '@/components/sections/LeadershipVoice';
+import { Team } from '@/components/sections/Team';
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
           <OpenSourceFest />
         </div>
         <OtherInitiatives />
+        <Team />
         <LeadershipVoice />
       </main>
       <Footer />
