@@ -25,9 +25,6 @@ export function Hero() {
           <Button size="lg" asChild>
             <Link href="#events">Explore Events</Link>
           </Button>
-          <Button size="lg" variant="secondary" asChild>
-            <Link href="#team">Join Us</Link>
-          </Button>
         </div>
       </div>
     </section>
