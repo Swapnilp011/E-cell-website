@@ -103,13 +103,13 @@ export default function ProfilePage() {
 
   const handleFormAction = (formData: FormData) => {
     startTransition(async () => {
-        if (user) {
-            const idToken = await user.getIdToken();
-            formData.append('idToken', idToken);
-            formAction(formData);
-        }
+      if (user) {
+        const idToken = await user.getIdToken();
+        formData.append('idToken', idToken);
+        formAction(formData);
+      }
     });
-  }
+  };
 
 
   if (loading) {
