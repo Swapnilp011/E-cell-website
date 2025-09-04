@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { auth } from '@/lib/firebase/client';
-import { onAuthStateChanged, type User } from 'firebase/auth';
+import { type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { getUserProfile, type UserProfile, updateUserProfile, type UpdateProfileFormState } from '@/lib/actions';
 import {
@@ -23,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useFormStatus } from 'react-dom';
+import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
 
 const initialState: UpdateProfileFormState = {
   message: '',
@@ -40,6 +40,7 @@ function SubmitButton() {
 
 
 export default function ProfilePage() {
+  const { auth, onAuthStateChanged } = useFirebaseAuth();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [idToken, setIdToken] = useState<string | null>(null);
@@ -56,7 +57,7 @@ export default function ProfilePage() {
         router.push('/login');
         return;
     }
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(async (user) => {
       if (user) {
         setUser(user);
         try {
@@ -78,7 +79,7 @@ export default function ProfilePage() {
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, [auth, onAuthStateChanged, router]);
 
   useEffect(() => {
     if (state.success) {
