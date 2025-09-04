@@ -103,6 +103,14 @@ export async function registerUser(
   prevState: RegisterFormState,
   formData: FormData
 ): Promise<RegisterFormState> {
+  if (!admin.apps.length) {
+    console.error('Firebase Admin SDK is not initialized.');
+    return {
+      message: 'Server configuration error. Please contact support.',
+      errors: { general: ['Server not ready.'] },
+      success: false,
+    };
+  }
   const validatedFields = registerSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -218,6 +226,10 @@ export async function loginUser(
 
 
 async function getAuthenticatedUser(idToken?: string | null) {
+  if (!admin.apps.length) {
+    console.error('Firebase Admin SDK is not initialized. Cannot authenticate user.');
+    return null;
+  }
   const tokenToVerify = idToken || headers().get('Authorization')?.split('Bearer ')[1];
   if (!tokenToVerify) {
     return null;
@@ -244,6 +256,11 @@ export type UserProfile = {
 };
 
 export async function getUserProfile(idToken?: string): Promise<UserProfile | null> {
+  if (!admin.apps.length) {
+    console.error('Firebase Admin SDK is not initialized. Cannot get user profile.');
+    return null;
+  }
+  
   const user = await getAuthenticatedUser(idToken);
   if (!user) {
     return null;
@@ -339,6 +356,15 @@ export async function updateUserProfile(
     };
   }
   
+  if (!admin.apps.length) {
+    console.error('Firebase Admin SDK is not initialized.');
+    return {
+      message: 'Server configuration error. Please contact support.',
+      errors: { general: ['Server not ready.'] },
+      success: false,
+    };
+  }
+
   try {
     // Update Firestore document
     const db = admin.firestore();
