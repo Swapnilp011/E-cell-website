@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { auth } from '@/lib/firebase/client';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -46,6 +46,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
 
   const [state, formAction] = useActionState(updateUserProfile, initialState);
 
@@ -100,12 +101,14 @@ export default function ProfilePage() {
     return initials.toUpperCase();
   };
 
-  const handleFormAction = async (formData: FormData) => {
-    if (user) {
-        const idToken = await user.getIdToken();
-        formData.append('idToken', idToken);
-        formAction(formData);
-    }
+  const handleFormAction = (formData: FormData) => {
+    startTransition(async () => {
+        if (user) {
+            const idToken = await user.getIdToken();
+            formData.append('idToken', idToken);
+            formAction(formData);
+        }
+    });
   }
 
 
