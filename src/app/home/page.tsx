@@ -1,3 +1,8 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import { auth } from '@/lib/firebase/client';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
@@ -10,6 +15,17 @@ import { LeadershipVoice } from '@/components/sections/LeadershipVoice';
 import { Team } from '@/components/sections/Team';
 
 export default function Home() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
@@ -22,7 +38,7 @@ export default function Home() {
           <OpenSourceFest />
         </div>
         <OtherInitiatives />
-        <Team />
+        {!loading && user && <Team />}
         <LeadershipVoice />
       </main>
       <Footer />
