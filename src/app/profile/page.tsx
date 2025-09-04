@@ -54,7 +54,8 @@ export default function ProfilePage() {
       if (user) {
         setUser(user);
         try {
-          const profile = await getUserProfile();
+          const idToken = await user.getIdToken();
+          const profile = await getUserProfile(idToken);
           setUserProfile(profile);
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
@@ -76,7 +77,11 @@ export default function ProfilePage() {
       });
       setIsEditing(false);
       // Re-fetch profile to show updated data
-      getUserProfile().then(setUserProfile);
+      if (user) {
+        user.getIdToken().then(token => {
+            getUserProfile(token).then(setUserProfile);
+        });
+      }
     } else if (state.message && state.errors) {
        toast({
         title: 'Update Failed',
@@ -84,7 +89,7 @@ export default function ProfilePage() {
         variant: 'destructive'
       });
     }
-  }, [state, toast])
+  }, [state, toast, user])
 
   const getAvatarFallback = (name: string | null | undefined) => {
     if (!name) return 'U';
@@ -95,6 +100,15 @@ export default function ProfilePage() {
     return initials.toUpperCase();
   };
 
+  const handleFormAction = async (formData: FormData) => {
+    if (user) {
+        const idToken = await user.getIdToken();
+        formData.append('idToken', idToken);
+        formAction(formData);
+    }
+  }
+
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -104,7 +118,21 @@ export default function ProfilePage() {
   }
 
   if (!user || !userProfile) {
-    return null; // Or a more graceful error state
+    return (
+         <div className="flex min-h-screen items-center justify-center">
+             <Card>
+                 <CardHeader>
+                     <CardTitle>Error</CardTitle>
+                     <CardDescription>Could not load user profile. Please try logging in again.</CardDescription>
+                 </CardHeader>
+                 <CardContent>
+                     <Button asChild>
+                         <Link href="/login">Go to Login</Link>
+                     </Button>
+                 </CardContent>
+             </Card>
+        </div>
+    );
   }
   
   const displayProfile = (
@@ -134,7 +162,7 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form action={formAction} className="space-y-4">
+    <form action={handleFormAction} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input id="name" name="name" defaultValue={userProfile.name} required />
@@ -172,6 +200,16 @@ export default function ProfilePage() {
           {state?.errors?.div && <p className="text-sm text-destructive">{state.errors.div[0]}</p>}
         </div>
       </div>
+       <CardFooter className="flex justify-center gap-4 pt-4">
+            {isEditing ? (
+              <>
+                <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+                <SubmitButton />
+              </>
+            ) : (
+               <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+            )}
+       </CardFooter>
     </form>
   )
 
@@ -182,27 +220,22 @@ export default function ProfilePage() {
           <CardHeader className="text-center">
             <Avatar className="mx-auto h-24 w-24 border-2 border-primary">
               <AvatarImage src={user.photoURL ?? ''} alt={user.displayName ?? 'User'} />
-              <AvatarFallback>{getAvatarFallback(isEditing ? userProfile.name : user.displayName)}</AvatarFallback>
+              <AvatarFallback>{getAvatarFallback(userProfile.name)}</AvatarFallback>
             </Avatar>
-            <CardTitle className="mt-4 font-headline text-3xl">{isEditing ? userProfile.name : userProfile.name}</CardTitle>
+            <CardTitle className="mt-4 font-headline text-3xl">{userProfile.name}</CardTitle>
             <CardDescription>{userProfile.email}</CardDescription>
           </CardHeader>
           <CardContent>
             {isEditing ? editProfileForm : displayProfile}
           </CardContent>
-          <CardFooter className="flex justify-center gap-4 pt-4">
-            {isEditing ? (
-              <>
-                <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                <SubmitButton />
-              </>
-            ) : (
-               <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
-            )}
-            <Button asChild variant="ghost">
-              <Link href="/home">Back to Home</Link>
-            </Button>
-          </CardFooter>
+          {!isEditing && (
+            <CardFooter className="flex justify-center gap-4 pt-4">
+                <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+                <Button asChild variant="ghost">
+                <Link href="/home">Back to Home</Link>
+                </Button>
+            </CardFooter>
+          )}
         </Card>
       </main>
     </div>

@@ -7,7 +7,6 @@ import {
 } from '@/ai/flows/leadership-testimonial-improvements';
 import { z } from 'zod';
 import admin from '@/lib/firebase/admin';
-import { auth as clientAuth } from '@/lib/firebase/client';
 import { getAuth } from 'firebase-admin/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
@@ -203,13 +202,13 @@ export async function loginUser(
 }
 
 
-async function getAuthenticatedUser() {
-  const idToken = headers().get('Authorization')?.split('Bearer ')[1];
-  if (!idToken) {
+async function getAuthenticatedUser(idToken?: string | null) {
+  const tokenToVerify = idToken || headers().get('Authorization')?.split('Bearer ')[1];
+  if (!tokenToVerify) {
     return null;
   }
   try {
-    const decodedToken = await getAuth().verifyIdToken(idToken);
+    const decodedToken = await getAuth().verifyIdToken(tokenToVerify);
     return decodedToken;
   } catch (error) {
     console.error('Error verifying token:', error);
@@ -228,8 +227,8 @@ export type UserProfile = {
   createdAt: string;
 };
 
-export async function getUserProfile(): Promise<UserProfile | null> {
-  const user = await getAuthenticatedUser();
+export async function getUserProfile(idToken?: string): Promise<UserProfile | null> {
+  const user = await getAuthenticatedUser(idToken);
   if (!user) {
     return null;
   }
@@ -266,6 +265,7 @@ const updateProfileSchema = z.object({
   department: z.string().min(1, { message: 'Please enter a department' }),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
   year: z.string().min(1, { message: 'Please select your year of study' }),
+  idToken: z.string(),
 });
 
 export type UpdateProfileFormState = {
@@ -285,15 +285,6 @@ export async function updateUserProfile(
   prevState: UpdateProfileFormState,
   formData: FormData
 ): Promise<UpdateProfileFormState> {
-  const user = await getAuthenticatedUser();
-  if (!user) {
-    return {
-      message: 'You must be logged in to update your profile.',
-      errors: { general: ['Authentication failed.'] },
-      success: false,
-    };
-  }
-  
   const validatedFields = updateProfileSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -306,8 +297,17 @@ export async function updateUserProfile(
     };
   }
 
-  const { name, college, department, div, year } = validatedFields.data;
+  const { idToken, name, college, department, div, year } = validatedFields.data;
 
+  const user = await getAuthenticatedUser(idToken);
+  if (!user) {
+    return {
+      message: 'You must be logged in to update your profile.',
+      errors: { general: ['Authentication failed.'] },
+      success: false,
+    };
+  }
+  
   try {
     // Update Firestore document
     const db = admin.firestore();
