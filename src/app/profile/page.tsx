@@ -140,6 +140,10 @@ export default function ProfilePage() {
           <p className="text-lg font-semibold">{userProfile.yearOfStudy}</p>
         </div>
         <div>
+          <p className="text-sm font-medium text-muted-foreground">Course</p>
+          <p className="text-lg font-semibold">{userProfile.course}</p>
+        </div>
+        <div>
           <p className="text-sm font-medium text-muted-foreground">Degree</p>
           <p className="text-lg font-semibold">{userProfile.degree}</p>
         </div>
@@ -182,6 +186,21 @@ export default function ProfilePage() {
         </Select>
         {state?.errors?.year && <p className="text-sm text-destructive">{state.errors.year[0]}</p>}
       </div>
+       <div className="space-y-2">
+            <Label htmlFor="course">Course</Label>
+            <Select name="course" defaultValue={userProfile.course} required>
+              <SelectTrigger id="course">
+                <SelectValue placeholder="Select your course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="B.Tech">B.Tech</SelectItem>
+                <SelectItem value="M.Tech">M.Tech</SelectItem>
+                <SelectItem value="BCA">BCA</SelectItem>
+                <SelectItem value="MCA">MCA</SelectItem>
+              </SelectContent>
+            </Select>
+            {state?.errors?.course && <p className="text-sm text-destructive">{state.errors.course[0]}</p>}
+          </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="degree">Degree</Label>

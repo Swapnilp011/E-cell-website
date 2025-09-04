@@ -154,13 +154,30 @@ export function RegisterForm() {
               <p className="text-sm text-destructive">{state.errors.year[0]}</p>
             )}
           </div>
+           <div className="space-y-2">
+            <Label htmlFor="course">Course</Label>
+            <Select name="course" required>
+              <SelectTrigger id="course">
+                <SelectValue placeholder="Select your course" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="B.Tech">B.Tech</SelectItem>
+                <SelectItem value="M.Tech">M.Tech</SelectItem>
+                <SelectItem value="BCA">BCA</SelectItem>
+                <SelectItem value="MCA">MCA</SelectItem>
+              </SelectContent>
+            </Select>
+            {state?.errors?.course && (
+              <p className="text-sm text-destructive">{state.errors.course[0]}</p>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="degree">Degree</Label>
               <Input
                 id="degree"
                 name="degree"
-                placeholder="e.g. B.Tech"
+                placeholder="e.g. CSE"
                 required
               />
               {state?.errors?.degree && (

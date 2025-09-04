@@ -68,6 +68,7 @@ const registerSchema = z.object({
     .string()
     .min(2, { message: 'College name must be at least 2 characters' }),
   degree: z.string().min(1, { message: 'Please enter a degree' }),
+  course: z.string().min(1, { message: 'Please select a course' }),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
   year: z.string().min(1, { message: 'Please select your year of study' }),
 });
@@ -80,6 +81,7 @@ export type RegisterFormState = {
     password?: string[];
     college?: string[];
     degree?: string[];
+    course?: string[];
     div?: string[];
     year?: string[];
     general?: string[];
@@ -103,7 +105,7 @@ export async function registerUser(
     };
   }
 
-  const { email, password, name, college, degree, div, year } =
+  const { email, password, name, college, degree, course, div, year } =
     validatedFields.data;
 
   try {
@@ -120,6 +122,7 @@ export async function registerUser(
       email,
       college,
       degree,
+      course,
       division: div,
       yearOfStudy: year,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -222,6 +225,7 @@ export type UserProfile = {
   email: string;
   college: string;
   degree: string;
+  course: string;
   division: string;
   yearOfStudy: string;
   createdAt: string;
@@ -248,6 +252,7 @@ export async function getUserProfile(idToken?: string): Promise<UserProfile | nu
       email: userData?.email,
       college: userData?.college,
       degree: userData?.degree,
+      course: userData?.course,
       division: userData?.division,
       yearOfStudy: userData?.yearOfStudy,
       createdAt: userData?.createdAt.toDate().toLocaleDateString(),
@@ -263,6 +268,7 @@ const updateProfileSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
   college: z.string().min(2, { message: 'College name must be at least 2 characters' }),
   degree: z.string().min(1, { message: 'Please enter a degree' }),
+  course: z.string().min(1, { message: 'Please select a course' }),
   div: z.string().regex(/^[a-zA-Z0-9]+$/, { message: 'Division must be alphanumeric' }),
   year: z.string().min(1, { message: 'Please select your year of study' }),
   idToken: z.string(),
@@ -274,6 +280,7 @@ export type UpdateProfileFormState = {
     name?: string[];
     college?: string[];
     degree?: string[];
+    course?: string[];
     div?: string[];
     year?: string[];
     general?: string[];
@@ -297,7 +304,7 @@ export async function updateUserProfile(
     };
   }
 
-  const { idToken, name, college, degree, div, year } = validatedFields.data;
+  const { idToken, name, college, degree, course, div, year } = validatedFields.data;
 
   const user = await getAuthenticatedUser(idToken);
   if (!user) {
@@ -315,6 +322,7 @@ export async function updateUserProfile(
       name,
       college,
       degree,
+      course,
       division: div,
       yearOfStudy: year,
     });
