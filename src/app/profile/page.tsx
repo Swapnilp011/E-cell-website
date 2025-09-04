@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import { auth } from '@/lib/firebase/client';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -42,11 +42,11 @@ function SubmitButton() {
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [idToken, setIdToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
 
   const [state, formAction] = useActionState(updateUserProfile, initialState);
 
@@ -55,8 +55,9 @@ export default function ProfilePage() {
       if (user) {
         setUser(user);
         try {
-          const idToken = await user.getIdToken();
-          const profile = await getUserProfile(idToken);
+          const token = await user.getIdToken();
+          setIdToken(token);
+          const profile = await getUserProfile(token);
           setUserProfile(profile);
         } catch (error) {
           console.error('Failed to fetch user profile:', error);
@@ -100,17 +101,6 @@ export default function ProfilePage() {
       .join('');
     return initials.toUpperCase();
   };
-
-  const handleFormAction = (formData: FormData) => {
-    startTransition(async () => {
-      if (user) {
-        const idToken = await user.getIdToken();
-        formData.append('idToken', idToken);
-        formAction(formData);
-      }
-    });
-  };
-
 
   if (loading) {
     return (
@@ -165,7 +155,8 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form action={handleFormAction} className="space-y-4">
+    <form action={formAction} className="space-y-4">
+      <input type="hidden" name="idToken" value={idToken ?? ''} />
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
         <Input id="name" name="name" defaultValue={userProfile.name} required />
