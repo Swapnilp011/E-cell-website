@@ -23,6 +23,7 @@ import { useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useFormStatus } from 'react-dom';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 const initialState: UpdateProfileFormState = {
   message: '',
@@ -121,11 +122,7 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <EcellLogo className="h-16 w-16 animate-spin" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!user || !userProfile) {

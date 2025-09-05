@@ -13,6 +13,7 @@ import { OpenSourceFest } from '@/components/sections/OpenSourceFest';
 import { OtherInitiatives } from '@/components/sections/OtherInitiatives';
 import { LeadershipVoice } from '@/components/sections/LeadershipVoice';
 import { Team } from '@/components/sections/Team';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 export default function HomePage() {
   const { auth } = useFirebaseAuth();
@@ -30,6 +31,10 @@ export default function HomePage() {
     });
     return () => unsubscribe();
   }, [auth]);
+  
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
