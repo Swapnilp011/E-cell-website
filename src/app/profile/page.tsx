@@ -21,7 +21,6 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useFormStatus } from 'react-dom';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
 import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
@@ -29,16 +28,6 @@ const initialState: UpdateProfileFormState = {
   message: '',
   success: false,
 };
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending}>
-      {pending ? 'Saving...' : 'Save Changes'}
-    </Button>
-  );
-}
-
 
 export default function ProfilePage() {
   const { auth, onAuthStateChanged } = useFirebaseAuth();
@@ -50,6 +39,8 @@ export default function ProfilePage() {
   const [showCustomCourse, setShowCustomCourse] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [isPending, startTransition] = useTransition();
+
 
   const [state, formAction] = useActionState(updateUserProfile, initialState);
 
@@ -121,6 +112,12 @@ export default function ProfilePage() {
     return initials.toUpperCase();
   };
 
+  const handleFormAction = (formData: FormData) => {
+    startTransition(() => {
+        formAction(formData)
+    });
+  }
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -174,7 +171,8 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form action={formAction} className="space-y-4">
+    <form action={handleFormAction} className="space-y-4">
+        <fieldset disabled={isPending} className="space-y-4">
       <input type="hidden" name="idToken" value={idToken ?? ''} />
       <div className="space-y-2">
         <Label htmlFor="name">Name</Label>
@@ -244,11 +242,14 @@ export default function ProfilePage() {
           {state?.errors?.div && <p className="text-sm text-destructive">{state.errors.div[0]}</p>}
         </div>
       </div>
+      </fieldset>
        <CardFooter className="flex justify-center gap-4 pt-4">
             {isEditing ? (
               <>
-                <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                <SubmitButton />
+                <Button variant="outline" onClick={() => setIsEditing(false)} disabled={isPending}>Cancel</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
               </>
             ) : (
                <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
@@ -258,6 +259,8 @@ export default function ProfilePage() {
   )
 
   return (
+     <>
+     {isPending && <LoadingSpinner fullPage />}
      <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 max-w-screen-2xl items-center">
@@ -291,5 +294,6 @@ export default function ProfilePage() {
         </Card>
       </main>
     </div>
+    </>
   );
 }
