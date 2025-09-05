@@ -164,7 +164,7 @@ export function RegisterForm() {
               <SelectContent>
                 <SelectItem value="B.Tech">B.Tech</SelectItem>
                 <SelectItem value="M.Tech">M.Tech</SelectItem>
-                <SelectItem value="BCA">BCA</CataItem>
+                <SelectItem value="BCA">BCA</SelectItem>
                 <SelectItem value="MCA">MCA</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
