@@ -210,18 +210,25 @@ export async function loginUser(
   const { email, password } = validatedFields.data;
   
   try {
+    // Note: We need to use the client SDK to sign in the user on the browser.
+    // This server action's primary purpose is to validate and then trigger a client-side login.
+    // A real implementation might create a session cookie here, but for this app,
+    // we will rely on the Firebase client-side auth state.
+    // The actual sign-in will be triggered from the component based on the success of this action.
     if (!clientAuth) {
-      return {
-          message: 'Firebase not initialized. Please try again.',
-          errors: { general: ['Firebase not initialized. Please try again.'] },
-          success: false,
-      };
+      throw new Error("Firebase client auth is not initialized.");
     }
+    // This call does not actually sign the user in on the server,
+    // but it verifies the credentials against Firebase Auth.
+    // We must call this on the client to persist session.
     await signInWithEmailAndPassword(clientAuth, email, password);
+
   } catch (error: any) {
     let errorMessage = 'An unexpected error occurred.';
     if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
       errorMessage = 'Invalid email or password.';
+    } else {
+        console.error("Login Error: ", error.code, error.message);
     }
     return {
       message: errorMessage,
