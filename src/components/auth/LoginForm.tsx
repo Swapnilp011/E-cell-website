@@ -10,49 +10,61 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
-import { loginUser, type LoginFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, type AuthError } from 'firebase/auth';
 import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
-const initialState: LoginFormState = {
-  message: '',
-  success: false,
-};
-
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState(loginUser, initialState);
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
   const { auth } = useFirebaseAuth();
 
-  useEffect(() => {
-    if (state.success) {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setIsPending(true);
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    if (!auth) {
+        setError("Authentication service is not available.");
+        setIsPending(false);
+        return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: 'Login Successful',
         description: 'Welcome back!',
       });
       router.push('/');
-    } else if (state.message && state.errors) {
+    } catch (e) {
+      const error = e as AuthError;
+      let errorMessage = 'An unexpected error occurred.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          errorMessage = 'Invalid email or password. Please try again.';
+      }
+      setError(errorMessage);
        toast({
         title: 'Login Failed',
-        description: state.errors.general?.[0] || 'Please check your credentials.',
+        description: errorMessage,
         variant: 'destructive',
       });
+    } finally {
+        setIsPending(false);
     }
-  }, [state, router, toast]);
-
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    formAction(formData);
   };
 
   return (
@@ -70,12 +82,12 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleFormSubmit} className="space-y-4">
-            {state.message && !state.success && (
+            {error && (
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Login Failed</AlertTitle>
                 <AlertDescription>
-                  {state.errors?.general?.[0] || state.message}
+                  {error}
                 </AlertDescription>
               </Alert>
             )}
@@ -89,9 +101,6 @@ export function LoginForm() {
                   placeholder="name@example.com"
                   required
                 />
-                {state.errors?.email && (
-                  <p className="text-sm text-destructive">{state.errors.email[0]}</p>
-                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -102,9 +111,6 @@ export function LoginForm() {
                   placeholder="••••••••"
                   required
                 />
-                 {state.errors?.password && (
-                  <p className="text-sm text-destructive">{state.errors.password[0]}</p>
-                )}
               </div>
             </fieldset>
             <Button type="submit" className="w-full" disabled={isPending}>

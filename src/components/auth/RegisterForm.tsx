@@ -26,8 +26,6 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
-import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const initialState: RegisterFormState = {
   message: '',
@@ -39,7 +37,6 @@ export function RegisterForm() {
   const [state, formAction, isPending] = useActionState(registerUser, initialState);
   const { toast } = useToast();
   const router = useRouter();
-  const { auth } = useFirebaseAuth();
   const [showCustomCourse, setShowCustomCourse] = useState(false);
 
   useEffect(() => {
