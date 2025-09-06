@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -111,12 +112,6 @@ export default function ProfilePage() {
     return initials.toUpperCase();
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    formAction(formData);
-  }
-
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -170,7 +165,7 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form onSubmit={handleFormSubmit} className="space-y-4">
+    <form action={formAction} className="space-y-4">
         <fieldset disabled={isPending} className="space-y-4">
       <input type="hidden" name="idToken" value={idToken ?? ''} />
       <div className="space-y-2">
