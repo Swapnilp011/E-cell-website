@@ -10,6 +10,8 @@ import admin from '@/lib/firebase/admin';
 import { getAuth } from 'firebase-admin/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { auth as clientAuth } from '@/lib/firebase/client';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 // Testimonial improvement schema and state
 const testimonialSchema = z.object({
@@ -175,7 +177,6 @@ const loginSchema = z.object({
   password: z
     .string()
     .min(6, { message: 'Password must be at least 6 characters' }),
-  error: z.string().optional(),
 });
 
 export type LoginFormState = {
@@ -194,17 +195,6 @@ export async function loginUser(
   formData: FormData
 ): Promise<LoginFormState> {
 
-  // If we get an error passed from the client-side, we immediately set that as the state.
-  const errorMessage = formData.get('error') as string | null;
-  if(errorMessage){
-     return {
-      message: errorMessage,
-      errors: { general: [errorMessage] },
-      success: false,
-    };
-  }
-
-
   const validatedFields = loginSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -217,9 +207,28 @@ export async function loginUser(
     };
   }
 
-  // Client-side sign-in handles the actual authentication.
-  // This server action is for any additional server-side logic after a successful client-side login,
-  // such as setting up a session or logging the event. For now, it just confirms success.
+  const { email, password } = validatedFields.data;
+  
+  try {
+    if (!clientAuth) {
+      return {
+          message: 'Firebase not initialized. Please try again.',
+          errors: { general: ['Firebase not initialized. Please try again.'] },
+          success: false,
+      };
+    }
+    await signInWithEmailAndPassword(clientAuth, email, password);
+  } catch (error: any) {
+    let errorMessage = 'An unexpected error occurred.';
+    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+      errorMessage = 'Invalid email or password.';
+    }
+    return {
+      message: errorMessage,
+      errors: { general: [errorMessage] },
+      success: false,
+    };
+  }
   
   return { message: 'Login successful!', success: true };
 }

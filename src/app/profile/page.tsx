@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
-import { LoadingIndicator } from '@/components/layout/LoadingSpinner';
+import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
 
 const initialState: UpdateProfileFormState = {
   message: '',
@@ -171,7 +171,7 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form action={handleFormAction} className="space-y-4">
+    <form action={formAction} className="space-y-4">
         <fieldset disabled={isPending} className="space-y-4">
       <input type="hidden" name="idToken" value={idToken ?? ''} />
       <div className="space-y-2">

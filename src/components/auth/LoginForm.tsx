@@ -21,7 +21,7 @@ import { Terminal } from 'lucide-react';
 import { auth } from '@/lib/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '../layout/LoadingSpinner';
+import { LoadingIndicator } from '../layout/LoadingIndicator';
 
 const initialState: LoginFormState = {
   message: '',
@@ -56,38 +56,11 @@ export function LoginForm() {
     }
   }, [state, toast, router]);
 
-  const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleClientLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!auth) {
-        startTransition(() => {
-            const errorFormData = new FormData();
-            errorFormData.set('error', 'Firebase not initialized. Please try again.');
-            formAction(errorFormData);
-        });
-        return;
-    }
     const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    startTransition(async () => {
-        try {
-          await signInWithEmailAndPassword(auth, email, password);
-          // Now call the server action, which in a real app might handle session creation
-          formAction(formData);
-        } catch (error: any) {
-          let errorMessage = 'An unexpected error occurred.';
-          if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-            errorMessage = 'Invalid email or password.';
-          }
-          
-          const errorFormData = new FormData();
-          errorFormData.set('email', email);
-          errorFormData.set('password', password);
-          errorFormData.set('error', errorMessage); // Pass error info
-          
-          formAction(errorFormData);
-        }
+    startTransition(() => {
+        formAction(formData);
     });
   };
 
@@ -105,7 +78,7 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleClientLogin} className="space-y-4">
+          <form action={formAction} className="space-y-4">
             {state?.errors?.general && (
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
