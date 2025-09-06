@@ -122,9 +122,6 @@ export async function registerUser(
   const finalCourse = course === 'Other' ? customCourse : course;
 
   try {
-     // NOTE: We do NOT use the client SDK here anymore.
-     // The creation will be handled by the client, which establishes session.
-     // This server action's job is to create the user record in Firestore.
     const userRecord = await admin.auth().createUser({
         email,
         password,
@@ -202,9 +199,9 @@ export async function loginUser(
     };
   }
   
-  // This server action is now a placeholder.
-  // The actual sign-in happens on the client with signInWithEmailAndPassword.
-  // This action is called on success from the client to fulfill the useActionState hook.
+  // The client will handle the actual sign in, this action is a placeholder
+  // for the useActionState hook to work correctly and trigger transitions.
+  // In a real app, you might use this to set a server-side session cookie.
   return { message: 'Login successful!', success: true };
 }
 

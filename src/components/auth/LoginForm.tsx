@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import { useActionState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
 import { loginUser, type LoginFormState } from '@/lib/actions';
@@ -18,9 +18,9 @@ import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 const initialState: LoginFormState = {
   message: '',
@@ -33,7 +33,6 @@ export function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
   const { auth } = useFirebaseAuth();
-  const [clientError, setClientError] = useState<string | null>(null);
 
   useEffect(() => {
     if (state.success) {
@@ -43,30 +42,13 @@ export function LoginForm() {
       });
       router.push('/');
     }
-  }, [state, toast, router]);
+  }, [state.success, router, toast]);
 
-  const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setClientError(null);
     const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    startTransition(async () => {
-        try {
-            if (!auth) throw new Error("Auth service not available");
-            await signInWithEmailAndPassword(auth, email, password);
-            // On success, call the server action to complete the process.
-            formAction(formData);
-        } catch (error: any) {
-            let errorMessage = 'An unexpected error occurred.';
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                errorMessage = 'Invalid email or password.';
-            } else {
-                console.error("Login Error: ", error.code, error.message);
-            }
-            setClientError(errorMessage);
-        }
+    startTransition(() => {
+      formAction(formData);
     });
   };
 
@@ -84,45 +66,54 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleClientLogin} className="space-y-4">
-            {clientError && (
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            {state.message && !state.success && (
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Login Failed</AlertTitle>
                 <AlertDescription>
-                  {clientError}
+                  {state.errors?.general?.[0] || state.message}
                 </AlertDescription>
               </Alert>
             )}
             <fieldset disabled={isPending} className="space-y-4">
-                <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    required
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  required
                 />
-                </div>
-                <div className="space-y-2">
+                {state.errors?.email && (
+                  <p className="text-sm text-destructive">{state.errors.email[0]}</p>
+                )}
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="••••••••"
-                    required
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="••••••••"
+                  required
                 />
-                </div>
+                 {state.errors?.password && (
+                  <p className="text-sm text-destructive">{state.errors.password[0]}</p>
+                )}
+              </div>
             </fieldset>
             <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? 'Logging In...' : 'Login'}
+              {isPending ? 'Logging In...' : 'Login'}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             Don't have an account?{' '}
-            <Link href="/register" className="font-medium text-primary hover:underline">
+            <Link
+              href="/register"
+              className="font-medium text-primary hover:underline"
+            >
               Register
             </Link>
           </p>
