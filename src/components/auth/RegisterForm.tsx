@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useActionState, useEffect, useState, useTransition } from 'react';
-import { useFormStatus } from 'react-dom';
 import { registerUser, type RegisterFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
@@ -27,40 +26,34 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
+import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const initialState: RegisterFormState = {
   message: '',
   success: false,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? 'Creating Account...' : 'Create Account'}
-    </Button>
-  );
-}
 
 export function RegisterForm() {
   const [state, formAction] = useActionState(registerUser, initialState);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const router = useRouter();
+  const { auth } = useFirebaseAuth();
   const [showCustomCourse, setShowCustomCourse] = useState(false);
 
   useEffect(() => {
     if (state.message && !state.success) {
-      if(state.errors?.general || state.errors?.email) {
-        // Don't show toast for specific field errors, which are displayed inline
-      }
+      // Errors are displayed inline, no toast needed for this.
     }
     if (state.success) {
       toast({
         title: 'Registration Successful',
-        description: state.message,
+        description: 'Please sign in with your new account.',
       });
-      router.push('/');
+      // Don't auto-login, redirect to login page
+      router.push('/login');
     }
   }, [state, toast, router]);
 

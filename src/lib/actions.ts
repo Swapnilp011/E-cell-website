@@ -10,8 +10,7 @@ import admin from '@/lib/firebase/admin';
 import { getAuth } from 'firebase-admin/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { auth as clientAuth } from '@/lib/firebase/client';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 // Testimonial improvement schema and state
 const testimonialSchema = z.object({
@@ -123,15 +122,16 @@ export async function registerUser(
   const finalCourse = course === 'Other' ? customCourse : course;
 
   try {
-     // Create user with client SDK to establish session
-    const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
-    await updateProfile(userCredential.user, { displayName: name });
+     // NOTE: We do NOT use the client SDK here anymore.
+     // The creation will be handled by the client, which establishes session.
+     // This server action's job is to create the user record in Firestore.
+    const userRecord = await admin.auth().createUser({
+        email,
+        password,
+        displayName: name,
+    });
 
-
-    // Then, create the user record in the backend for our own database
-    const token = await userCredential.user.getIdToken();
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const uid = decodedToken.uid;
+    const uid = userRecord.uid;
     
     const db = admin.firestore();
     await db.collection('users').doc(uid).set({
@@ -145,11 +145,11 @@ export async function registerUser(
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return { message: 'User registered successfully! Redirecting...', success: true };
+    return { message: 'User registered successfully! Please log in.', success: true };
   } catch (error: any) {
     console.error('Registration Error:', error);
     let errorMessage = 'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/email-already-in-use') {
+    if (error.code === 'auth/email-already-exists') {
       errorMessage = 'This email address is already in use by another account.';
        return {
         message: errorMessage,
@@ -171,7 +171,7 @@ const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
   password: z
     .string()
-    .min(6, { message: 'Password must be at least 6 characters' }),
+    .min(1, { message: 'Password is required' }),
 });
 
 export type LoginFormState = {
@@ -196,32 +196,15 @@ export async function loginUser(
 
   if (!validatedFields.success) {
     return {
-      message: 'Please correct the errors below.',
+      message: 'Validation failed',
       errors: validatedFields.error.flatten().fieldErrors,
       success: false,
     };
   }
-
-  const { email, password } = validatedFields.data;
   
-  try {
-    // We must call this on the client to persist session.
-    await signInWithEmailAndPassword(clientAuth, email, password);
-
-  } catch (error: any) {
-    let errorMessage = 'An unexpected error occurred.';
-    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-      errorMessage = 'Invalid email or password.';
-    } else {
-        console.error("Login Error: ", error.code, error.message);
-    }
-    return {
-      message: errorMessage,
-      errors: { general: [errorMessage] },
-      success: false,
-    };
-  }
-  
+  // This server action is now a placeholder.
+  // The actual sign-in happens on the client with signInWithEmailAndPassword.
+  // This action is called on success from the client to fulfill the useActionState hook.
   return { message: 'Login successful!', success: true };
 }
 

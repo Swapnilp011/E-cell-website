@@ -10,8 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect, useTransition } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { EcellLogo } from '../icons/EcellLogo';
 import { loginUser, type LoginFormState } from '@/lib/actions';
@@ -20,31 +19,23 @@ import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
 
 const initialState: LoginFormState = {
   message: '',
   success: false,
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? 'Logging In...' : 'Login'}
-    </Button>
-  );
-}
-
 export function LoginForm() {
   const [state, formAction] = useActionState(loginUser, initialState);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const router = useRouter();
+  const { auth } = useFirebaseAuth();
+  const [clientError, setClientError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (state.message && !state.success) {
-      // We are showing the error in an Alert, so no need for a toast.
-    }
     if (state.success) {
       toast({
         title: 'Login Successful',
@@ -54,11 +45,28 @@ export function LoginForm() {
     }
   }, [state, toast, router]);
 
-  const handleClientLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleClientLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setClientError(null);
     const formData = new FormData(event.currentTarget);
-    startTransition(() => {
-        formAction(formData);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    startTransition(async () => {
+        try {
+            if (!auth) throw new Error("Auth service not available");
+            await signInWithEmailAndPassword(auth, email, password);
+            // On success, call the server action to complete the process.
+            formAction(formData);
+        } catch (error: any) {
+            let errorMessage = 'An unexpected error occurred.';
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                errorMessage = 'Invalid email or password.';
+            } else {
+                console.error("Login Error: ", error.code, error.message);
+            }
+            setClientError(errorMessage);
+        }
     });
   };
 
@@ -77,12 +85,12 @@ export function LoginForm() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleClientLogin} className="space-y-4">
-            {state?.errors?.general && (
+            {clientError && (
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
                 <AlertTitle>Login Failed</AlertTitle>
                 <AlertDescription>
-                  {state.errors.general[0]}
+                  {clientError}
                 </AlertDescription>
               </Alert>
             )}
@@ -96,9 +104,6 @@ export function LoginForm() {
                     placeholder="name@example.com"
                     required
                 />
-                {state?.errors?.email && (
-                    <p className="text-sm text-destructive">{state.errors.email[0]}</p>
-                )}
                 </div>
                 <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -109,11 +114,6 @@ export function LoginForm() {
                     placeholder="••••••••"
                     required
                 />
-                {state?.errors?.password && (
-                    <p className="text-sm text-destructive">
-                    {state.errors.password[0]}
-                    </p>
-                )}
                 </div>
             </fieldset>
             <Button type="submit" className="w-full" disabled={isPending}>
