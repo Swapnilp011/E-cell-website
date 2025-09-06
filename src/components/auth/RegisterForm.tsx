@@ -26,7 +26,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 const initialState: RegisterFormState = {
   message: '',
@@ -78,7 +78,7 @@ export function RegisterForm() {
 
   return (
     <>
-    {isPending && <LoadingIndicator fullPage />}
+    {isPending && <LoadingSpinner fullPage />}
     <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
         <EcellLogo className="mx-auto h-12 w-12" />

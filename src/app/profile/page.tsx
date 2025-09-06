@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useActionState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
-import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 const initialState: UpdateProfileFormState = {
   message: '',
@@ -121,7 +121,7 @@ export default function ProfilePage() {
   }
 
   if (loading) {
-    return <LoadingIndicator />;
+    return <LoadingSpinner />;
   }
 
   if (!user || !userProfile) {
@@ -262,7 +262,7 @@ export default function ProfilePage() {
 
   return (
      <>
-     {isPending && <LoadingIndicator fullPage />}
+     {isPending && <LoadingSpinner fullPage />}
      <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 max-w-screen-2xl items-center">

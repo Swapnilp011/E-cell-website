@@ -1,11 +1,11 @@
 import { EcellLogo } from '@/components/icons/EcellLogo';
 import { Progress } from '@/components/ui/progress';
 
-type LoadingIndicatorProps = {
+type LoadingSpinnerProps = {
   fullPage?: boolean;
 };
 
-export function LoadingIndicator({ fullPage = false }: LoadingIndicatorProps) {
+export function LoadingSpinner({ fullPage = false }: LoadingSpinnerProps) {
     const indicatorContent = (
          <div className="flex w-full max-w-sm flex-col items-center gap-4">
           <div className='flex items-center gap-4'>

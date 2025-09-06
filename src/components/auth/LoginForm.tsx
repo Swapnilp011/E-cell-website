@@ -21,7 +21,7 @@ import { Terminal } from 'lucide-react';
 import { auth } from '@/lib/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
+import { LoadingSpinner } from '@/components/layout/LoadingSpinner';
 
 const initialState: LoginFormState = {
   message: '',
@@ -66,7 +66,7 @@ export function LoginForm() {
 
   return (
     <>
-      {isPending && <LoadingIndicator fullPage />}
+      {isPending && <LoadingSpinner fullPage />}
       <Card className="mx-auto w-full max-w-md">
         <CardHeader className="text-center">
           <EcellLogo className="mx-auto h-12 w-12" />
