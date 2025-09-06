@@ -1,5 +1,4 @@
 import { EcellLogo } from '@/components/icons/EcellLogo';
-import { Progress } from '@/components/ui/progress';
 
 type LoadingSpinnerProps = {
   fullPage?: boolean;
@@ -7,15 +6,9 @@ type LoadingSpinnerProps = {
 
 export function LoadingSpinner({ fullPage = false }: LoadingSpinnerProps) {
     const indicatorContent = (
-         <div className="flex w-full max-w-sm flex-col items-center gap-4">
-          <div className='flex items-center gap-4'>
-            <EcellLogo className="h-16 w-16" />
-            <div className='flex flex-col text-left w-64'>
-                <p className="text-lg font-bold text-foreground">E-Cell IICT</p>
-                <p className="text-muted-foreground">Processing your request...</p>
-            </div>
-          </div>
-          <Progress value={50} className="w-full animate-pulse" />
+         <div className="flex flex-col items-center gap-4 text-center">
+            <EcellLogo className="h-20 w-20 animate-spin" />
+            <p className="font-semibold text-muted-foreground">Loading...</p>
         </div>
     )
 
