@@ -53,12 +53,6 @@ export function RegisterForm() {
     }
   }, [state, toast, router]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    formAction(formData);
-  }
-
   return (
     <>
     {isPending && <LoadingSpinner fullPage />}
@@ -73,7 +67,7 @@ export function RegisterForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={formAction} className="space-y-4">
            {(state?.errors?.general || state.errors?.email) && (
              <Alert variant="destructive">
                <Terminal className="h-4 w-4" />
