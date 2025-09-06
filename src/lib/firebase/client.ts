@@ -18,7 +18,7 @@ let app: FirebaseApp;
 let auth: Auth;
 
 // Initialize Firebase
-// this check is to prevent Vercel from initializing the app multiple times
+// this check is to prevent the app from being initialized multiple times
 if (!getApps().length) {
     app = initializeApp(firebaseConfig);
 } else {

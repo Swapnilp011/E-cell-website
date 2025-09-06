@@ -11,7 +11,7 @@ import { getAuth } from 'firebase-admin/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { auth as clientAuth } from '@/lib/firebase/client';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 // Testimonial improvement schema and state
 const testimonialSchema = z.object({
@@ -105,14 +105,6 @@ export async function registerUser(
   prevState: RegisterFormState,
   formData: FormData
 ): Promise<RegisterFormState> {
-  if (!admin.apps.length) {
-    console.error('Firebase Admin SDK is not initialized.');
-    return {
-      message: 'Server configuration error. Please contact support.',
-      errors: { general: ['Server not ready.'] },
-      success: false,
-    };
-  }
   const validatedFields = registerSchema.safeParse(
     Object.fromEntries(formData.entries())
   );
@@ -131,15 +123,18 @@ export async function registerUser(
   const finalCourse = course === 'Other' ? customCourse : course;
 
   try {
-    const userRecord = await admin.auth().createUser({
-      email,
-      password,
-      displayName: name,
-    });
+     // Create user with client SDK to establish session
+    const userCredential = await createUserWithEmailAndPassword(clientAuth, email, password);
+    await updateProfile(userCredential.user, { displayName: name });
+
+
+    // Then, create the user record in the backend for our own database
+    const token = await userCredential.user.getIdToken();
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const uid = decodedToken.uid;
     
-    // Now, save the rest of the user's details to Firestore
     const db = admin.firestore();
-    await db.collection('users').doc(userRecord.uid).set({
+    await db.collection('users').doc(uid).set({
       name,
       email,
       college,
@@ -150,11 +145,11 @@ export async function registerUser(
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    return { message: 'User registered successfully!', success: true };
+    return { message: 'User registered successfully! Redirecting...', success: true };
   } catch (error: any) {
-    console.error('Firebase Admin Error:', error);
+    console.error('Registration Error:', error);
     let errorMessage = 'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/email-already-exists') {
+    if (error.code === 'auth/email-already-in-use') {
       errorMessage = 'This email address is already in use by another account.';
        return {
         message: errorMessage,
@@ -210,16 +205,6 @@ export async function loginUser(
   const { email, password } = validatedFields.data;
   
   try {
-    // Note: We need to use the client SDK to sign in the user on the browser.
-    // This server action's primary purpose is to validate and then trigger a client-side login.
-    // A real implementation might create a session cookie here, but for this app,
-    // we will rely on the Firebase client-side auth state.
-    // The actual sign-in will be triggered from the component based on the success of this action.
-    if (!clientAuth) {
-      throw new Error("Firebase client auth is not initialized.");
-    }
-    // This call does not actually sign the user in on the server,
-    // but it verifies the credentials against Firebase Auth.
     // We must call this on the client to persist session.
     await signInWithEmailAndPassword(clientAuth, email, password);
 

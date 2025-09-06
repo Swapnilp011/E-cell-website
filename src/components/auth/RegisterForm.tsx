@@ -51,12 +51,8 @@ export function RegisterForm() {
 
   useEffect(() => {
     if (state.message && !state.success) {
-      if(state.errors?.general) {
-        toast({
-          title: 'Registration Failed',
-          description: state.message,
-          variant: 'destructive',
-        });
+      if(state.errors?.general || state.errors?.email) {
+        // Don't show toast for specific field errors, which are displayed inline
       }
     }
     if (state.success) {
@@ -91,12 +87,12 @@ export function RegisterForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-           {state?.errors?.general && (
+           {(state?.errors?.general || state.errors?.email) && (
              <Alert variant="destructive">
                <Terminal className="h-4 w-4" />
                <AlertTitle>Registration Failed</AlertTitle>
                <AlertDescription>
-                 {state.errors.general[0]}
+                 {state.errors.general?.[0] || state.errors.email?.[0]}
                </AlertDescription>
              </Alert>
            )}
@@ -117,9 +113,7 @@ export function RegisterForm() {
                 placeholder="name@example.com"
                 required
               />
-              {state?.errors?.email && (
-                <p className="text-sm text-destructive">{state.errors.email[0]}</p>
-              )}
+              
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
