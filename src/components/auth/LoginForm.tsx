@@ -21,7 +21,7 @@ import { Terminal } from 'lucide-react';
 import { auth } from '@/lib/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '../layout/LoadingIndicator';
+import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
 
 const initialState: LoginFormState = {
   message: '',
@@ -78,7 +78,7 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-4">
+          <form onSubmit={handleClientLogin} className="space-y-4">
             {state?.errors?.general && (
               <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
@@ -88,36 +88,36 @@ export function LoginForm() {
                 </AlertDescription>
               </Alert>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="name@example.com"
-                required
-                disabled={isPending}
-              />
-              {state?.errors?.email && (
-                <p className="text-sm text-destructive">{state.errors.email[0]}</p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                required
-                disabled={isPending}
-              />
-              {state?.errors?.password && (
-                <p className="text-sm text-destructive">
-                  {state.errors.password[0]}
-                </p>
-              )}
-            </div>
+            <fieldset disabled={isPending} className="space-y-4">
+                <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    required
+                />
+                {state?.errors?.email && (
+                    <p className="text-sm text-destructive">{state.errors.email[0]}</p>
+                )}
+                </div>
+                <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    required
+                />
+                {state?.errors?.password && (
+                    <p className="text-sm text-destructive">
+                    {state.errors.password[0]}
+                    </p>
+                )}
+                </div>
+            </fieldset>
             <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? 'Logging In...' : 'Login'}
             </Button>

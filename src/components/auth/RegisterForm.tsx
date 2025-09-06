@@ -26,7 +26,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Terminal } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { LoadingIndicator } from '../layout/LoadingSpinner';
+import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
 
 const initialState: RegisterFormState = {
   message: '',

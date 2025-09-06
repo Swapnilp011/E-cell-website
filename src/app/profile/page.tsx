@@ -112,8 +112,10 @@ export default function ProfilePage() {
     return initials.toUpperCase();
   };
 
-  const handleFormAction = (formData: FormData) => {
-    startTransition(() => {
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+     startTransition(() => {
         formAction(formData)
     });
   }
@@ -171,7 +173,7 @@ export default function ProfilePage() {
   );
   
   const editProfileForm = (
-    <form action={formAction} className="space-y-4">
+    <form onSubmit={handleFormSubmit} className="space-y-4">
         <fieldset disabled={isPending} className="space-y-4">
       <input type="hidden" name="idToken" value={idToken ?? ''} />
       <div className="space-y-2">

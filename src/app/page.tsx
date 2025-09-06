@@ -13,7 +13,7 @@ import { OpenSourceFest } from '@/components/sections/OpenSourceFest';
 import { OtherInitiatives } from '@/components/sections/OtherInitiatives';
 import { LeadershipVoice } from '@/components/sections/LeadershipVoice';
 import { Team } from '@/components/sections/Team';
-import { LoadingIndicator } from '@/components/layout/LoadingSpinner';
+import { LoadingIndicator } from '@/components/layout/LoadingIndicator';
 
 export default function HomePage() {
   const { auth } = useFirebaseAuth();
