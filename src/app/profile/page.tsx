@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { type User } from 'firebase/auth';
+import { type User, onAuthStateChanged } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { getUserProfile, type UserProfile, updateUserProfile, type UpdateProfileFormState } from '@/lib/actions';
 import {
@@ -30,7 +30,7 @@ const initialState: UpdateProfileFormState = {
 };
 
 export default function ProfilePage() {
-  const { auth, onAuthStateChanged } = useFirebaseAuth();
+  const { auth } = useFirebaseAuth();
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [idToken, setIdToken] = useState<string | null>(null);
@@ -48,7 +48,7 @@ export default function ProfilePage() {
         router.push('/login');
         return;
     }
-    const unsubscribe = onAuthStateChanged(async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
         try {
@@ -70,7 +70,7 @@ export default function ProfilePage() {
     });
 
     return () => unsubscribe();
-  }, [auth, onAuthStateChanged, router]);
+  }, [auth, router]);
 
   useEffect(() => {
     if (state.success) {

@@ -1,8 +1,7 @@
 'use client';
 
-import {app, auth} from '@/lib/firebase/client';
-import {onAuthStateChanged} from 'firebase/auth';
+import {auth} from '@/lib/firebase/client';
 
 export function useFirebaseAuth() {
-  return {auth: auth, onAuthStateChanged};
+  return {auth};
 }

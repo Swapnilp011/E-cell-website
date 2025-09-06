@@ -6,7 +6,7 @@ import { EcellLogo } from '../icons/EcellLogo';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
-import { auth } from '@/lib/firebase/client';
+import { useFirebaseAuth } from '@/hooks/use-firebase-auth';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,7 @@ export function Header() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const { auth } = useFirebaseAuth();
 
   useEffect(() => {
     if (!auth) {
@@ -34,7 +35,7 @@ export function Header() {
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   const handleLogout = async () => {
     if (!auth) return;
