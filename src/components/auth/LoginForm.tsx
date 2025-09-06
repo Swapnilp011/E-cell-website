@@ -28,8 +28,7 @@ const initialState: LoginFormState = {
 };
 
 export function LoginForm() {
-  const [state, formAction] = useActionState(loginUser, initialState);
-  const [isPending, startTransition] = useTransition();
+  const [state, formAction, isPending] = useActionState(loginUser, initialState);
   const { toast } = useToast();
   const router = useRouter();
   const { auth } = useFirebaseAuth();
@@ -41,15 +40,19 @@ export function LoginForm() {
         description: 'Welcome back!',
       });
       router.push('/');
+    } else if (state.message && state.errors) {
+       toast({
+        title: 'Login Failed',
+        description: state.errors.general?.[0] || 'Please check your credentials.',
+        variant: 'destructive',
+      });
     }
-  }, [state.success, router, toast]);
+  }, [state, router, toast]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    startTransition(() => {
-      formAction(formData);
-    });
+    formAction(formData);
   };
 
   return (

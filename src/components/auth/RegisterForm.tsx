@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { registerUser, type RegisterFormState } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
@@ -36,8 +36,7 @@ const initialState: RegisterFormState = {
 
 
 export function RegisterForm() {
-  const [state, formAction] = useActionState(registerUser, initialState);
-  const [isPending, startTransition] = useTransition();
+  const [state, formAction, isPending] = useActionState(registerUser, initialState);
   const { toast } = useToast();
   const router = useRouter();
   const { auth } = useFirebaseAuth();
@@ -60,9 +59,7 @@ export function RegisterForm() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    startTransition(() => {
-      formAction(formData);
-    });
+    formAction(formData);
   }
 
   return (

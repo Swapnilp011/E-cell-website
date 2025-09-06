@@ -10,7 +10,8 @@ import admin from '@/lib/firebase/admin';
 import { getAuth } from 'firebase-admin/auth';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from './firebase/client';
 
 // Testimonial improvement schema and state
 const testimonialSchema = z.object({
@@ -199,10 +200,27 @@ export async function loginUser(
     };
   }
   
-  // The client will handle the actual sign in, this action is a placeholder
-  // for the useActionState hook to work correctly and trigger transitions.
-  // In a real app, you might use this to set a server-side session cookie.
-  return { message: 'Login successful!', success: true };
+  const { email, password } = validatedFields.data;
+
+  try {
+    // We are not using the result here, just authenticating on the client
+    // This is a workaround to use useActionState for pending/error states
+    // The actual sign-in is handled by the effect in the component
+    // But we can do a check here to provide better errors.
+    // NOTE: This will not actually sign the user in on the server.
+    await signInWithEmailAndPassword(auth, email, password);
+    return { message: 'Login successful!', success: true };
+  } catch (error: any) {
+      let errorMessage = 'An unexpected error occurred.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          errorMessage = 'Invalid email or password. Please try again.';
+      }
+      return {
+        message: errorMessage,
+        errors: { general: [errorMessage] },
+        success: false,
+      };
+  }
 }
 
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import { type User } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { getUserProfile, type UserProfile, updateUserProfile, type UpdateProfileFormState } from '@/lib/actions';
@@ -39,10 +39,9 @@ export default function ProfilePage() {
   const [showCustomCourse, setShowCustomCourse] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const [isPending, startTransition] = useTransition();
 
 
-  const [state, formAction] = useActionState(updateUserProfile, initialState);
+  const [state, formAction, isPending] = useActionState(updateUserProfile, initialState);
 
   useEffect(() => {
     if (!auth) {
@@ -115,9 +114,7 @@ export default function ProfilePage() {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-     startTransition(() => {
-        formAction(formData)
-    });
+    formAction(formData);
   }
 
   if (loading) {
