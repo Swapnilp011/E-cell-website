@@ -142,23 +142,54 @@ export async function registerUser(
     });
 
     return { message: 'User registered successfully! Please log in.', success: true };
-  } catch (error: any) {
+} catch (error: any) {
     console.error('Registration Error:', error);
+
+    // Default error message
     let errorMessage = 'An unexpected error occurred. Please try again.';
-    if (error.code === 'auth/email-already-exists') {
-      errorMessage = 'This email address is already in use by another account.';
-       return {
-        message: errorMessage,
-        errors: { email: [errorMessage] },
-        success: false,
-      };
+
+    // Check for Firebase Authentication errors
+    if (error.code && error.code.startsWith('auth/')) {
+        switch (error.code) {
+            case 'auth/email-already-exists':
+                errorMessage = 'This email address is already in use by another account.';
+                return {
+                    message: errorMessage,
+                    errors: { email: [errorMessage] },
+                    success: false,
+                };
+            case 'auth/invalid-email':
+                errorMessage = 'The email address is not valid.';
+                 return {
+                    message: errorMessage,
+                    errors: { email: [errorMessage] },
+                    success: false,
+                };
+            case 'auth/operation-not-allowed':
+                errorMessage = 'Email/password accounts are not enabled.';
+                 return {
+                    message: errorMessage,
+                    errors: { general: [errorMessage] },
+                    success: false,
+                };
+            case 'auth/weak-password':
+                errorMessage = 'The password is too weak.';
+                 return {
+                    message: errorMessage,
+                    errors: { password: [errorMessage] },
+                    success: false,
+                };
+            default:
+                errorMessage = error.message; 
+        }
     }
+
     return {
-      message: errorMessage,
-      errors: { general: [errorMessage] },
-      success: false,
+        message: errorMessage,
+        errors: { general: [errorMessage] },
+        success: false,
     };
-  }
+}
 }
 
 async function getAuthenticatedUser(idToken?: string | null) {
